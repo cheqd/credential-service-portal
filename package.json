@@ -1,7 +1,22 @@
 {
-	"name": "caas-portal",
+	"name": "@cheqd/caas-portal",
 	"version": "0.0.1",
 	"private": true,
+	"description": "Management portal for credential service",
+	"author": "Cheqd Foundation Limited (https://github.com/cheqd)",
+	"repository": "https://github.com/cheqd/caas-portal.git",
+	"keywords": [
+		"cheqd",
+		"ssi",
+		"did",
+		"vc",
+		"credential service",
+		"caas"
+	],
+	"bugs": {
+		"url": "https://github.com/cheqd/caas-portal/issues"
+	},
+	"homepage": "https://github.com/cheqd/caas-portal#readme",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -13,6 +28,10 @@
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest"
+	},
+	"dependencies": {
+		"clsx": "^2.1.0",
+		"tailwind-merge": "^2.2.1"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -41,8 +60,24 @@
 		"vitest": "^1.2.0"
 	},
 	"type": "module",
-	"dependencies": {
-		"clsx": "^2.1.0",
-		"tailwind-merge": "^2.2.1"
+	"files": [
+		".svelte-kit/**/*",
+		"LICENSE",
+		"package.json",
+		"README.md"
+	],
+	"browserslist": {
+		"production": [
+			">10%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 safari version"
+		]
+	},
+	"engines": {
+		"node": ">=20.11.0"
 	}
 }
