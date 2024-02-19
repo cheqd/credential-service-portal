@@ -4,8 +4,8 @@
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
 </script>
 
-<div class="w-full h-full flex flex-col px-4">
-	<div class="relative flex items-center">
+<div class="w-full h-full flex flex-col px-4 mb-8">
+	<div class="relative flex items-center justify-center">
 		<div class=" flex flex-col items-center lg:gap-6 text-center">
 			<div class="flex flex-col lg:flex-row lg:gap-3 lg:text-6xl text-3xl mt-10">
 				<span class="font-bold text-black">Credential</span>
@@ -33,14 +33,14 @@
 			/>
 		</div>
 
-		<img src="/trust-triangle.png" class=" w-1/2" alt="" />
+		<img src="/trust-triangle.png" class="w-1/2 hidden lg:block" alt="" />
 	</div>
 
 	<!-- <div class="h-screen bg-gradient-to-br from-primary-100 via-secondary-100 to-white"></div> -->
-	<div class="flex flex-col w-full items-center">
+	<div class="flex flex-col w-full items-center mt-8">
 		<p class="text-primary-500 text-sm uppercase">Issue digital credentials</p>
 
-		<p class="text-4xl mb-8">
+		<p class="text-4xl mb-8 text-center">
 			What is credential <span class=" font-bold text-primary-500">service?</span>
 		</p>
 
@@ -53,10 +53,10 @@
 	<div class="flex flex-col w-full items-center mt-8">
 		<p class="text-primary-500 text-sm uppercase">Easy to get Started</p>
 
-		<p class="text-2xl mb-8 font-semibold">Benefits</p>
+		<p class="text-4xl mb-8 font-semibold">Benefits</p>
 	</div>
 
-	<div class="flex w-full flex-wrap justify-center px-20 gap-8">
+	<div class="flex w-full flex-wrap justify-center lg:px-20 gap-8">
 		<BenefitsCard
 			number={'01'}
 			title="Profitability"
