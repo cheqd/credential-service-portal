@@ -1,0 +1,45 @@
+name: "Release"
+on:
+  workflow_call:
+defaults:
+  run:
+    shell: bash
+permissions:
+  contents: write
+  packages: write
+
+
+jobs:
+  release:
+    name: "Semantic Release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          # Semantic release needs at least Node v20.8.1, we're switching to Node v20.11.0 LTS
+          node-version: 20.11.0
+          cache: "npm"
+
+      - name: "Obtain Github App token"
+        id: app-token
+        uses: getsentry/action-github-app-token@v3.0.0
+        with:
+          app_id: ${{ secrets.BOT_APP_ID }}
+          private_key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+
+      - name: "Clean install dependencies"
+        run: npm ci
+
+      - name: "Run npm build"
+        run: npm run build
+
+      - name: "Execute Semantic Release"
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
