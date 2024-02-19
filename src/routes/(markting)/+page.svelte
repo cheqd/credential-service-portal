@@ -1,64 +1,94 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	let playback = 0.5;
-	import ArrowIcon from '$lib/icons/arrowIcon.svelte';
+	import BenefitsCard from '$lib/components/BenefitsCard.svelte';
+	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
 </script>
 
-<div class="w-full h-full flex flex-col">
-	<div class="flex justify-between items-start w-full h-1/2 min-h-[690px] relative overflow-hidden">
-		<div
-			class="flex flex-col gap-6 p-9 items-start justify-center text-start lg:w-1/2 h-full mx-20 my-14"
-		>
-			<div class="flex flex-col">
-				<div class="flex gap-3 text-6xl">
-					<span class="font-semibold text-black">Credentials for </span>
-					<span class="font-semibold text-primary-400">Everyone</span>
-				</div>
-				<div class="flex gap-3 text-6xl">
-					<span class="font-semibold text-black">with </span>
-					<span class="font-semibold text-primary-400">caas</span>
-				</div>
+<div class="w-full h-full flex flex-col px-4">
+	<div class="relative flex items-center">
+		<div class=" flex flex-col items-center lg:gap-6 text-center">
+			<div class="flex flex-col lg:flex-row lg:gap-3 lg:text-6xl text-3xl mt-10">
+				<span class="font-bold text-black">Credential</span>
+				<span class="font-bold text-primary-500">Service</span>
 			</div>
 
-			<p class="max-w-xl text-tertiary-800 text-2xl">
-				Exchange and monetise Trusted Data that is verifiable, portable, and privacy-preserving.
+			<p class="max-w-xl font-light lg:text-2xl my-4">
+				The easiest and quickest way to start issuing credentials and getting paid
 			</p>
 
-			<div class="w-full flex gap-9 items-baseline">
-				<button on:click={() => goto('/signin')} class=" btn variant-filled-primary bg-primary-400 text-xl w-1/3 h-14"
-					>Get Started
+			<div class="w-full flex justify-center">
+				<button
+					on:click={() => goto('/signin')}
+					class=" btn variant-filled-primary bg-primary-500 text-xl w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"
+				>
+					<CheqdIcon />
+					<span>Get Started</span>
 				</button>
-				<div class=" flex flex-col">
-					<div class="flex gap-1 items-center">
-						<a class="text-lg text-tertiary-800" href="/">Learn more</a>
-						<ArrowIcon class="text-tertiary-800" />
-					</div>
-					<div class="w-28 h-1 bg-gradient-to-r from-primary-300 to-warning-300 rounded"></div>
-				</div>
 			</div>
+
+			<img
+				src="/trust-triangle.png"
+				class="absolute h-80 w-80 object-cover lg:opacity-0 opacity-50 -z-20"
+				alt=""
+			/>
 		</div>
 
-		<!-- svelte-ignore a11y-media-has-caption -->
-		<video
-			class="hidden lg:flex"
-			autoplay
-			bind:playbackRate={playback}
-			loop
-			height="50%"
-			width="50%"
-			preload="auto"
-		>
-			<source src="/mobius.mp4" type="video/mp4" />
-			<track kind="caption" />
-		</video>
-
-		<!-- asset with a transparent background -->
-		<img
-			src="/asset.png"
-			class="w-1/2 rounded-lg border border-tertiary-200 shadow-lg absolute bottom-10 right-0"
-			alt=""
-		/>
+		<img src="/trust-triangle.png" class=" w-1/2" alt="" />
 	</div>
 
-	<div class="h-screen bg-gradient-to-br from-primary-100 via-secondary-100 to-white"></div>
+	<!-- <div class="h-screen bg-gradient-to-br from-primary-100 via-secondary-100 to-white"></div> -->
+	<div class="flex flex-col w-full items-center">
+		<p class="text-primary-500 text-sm uppercase">Issue digital credentials</p>
+
+		<p class="text-4xl mb-8">
+			What is credential <span class=" font-bold text-primary-500">service?</span>
+		</p>
+
+		<p class="text-center max-w-[650px] font-light text-xl">
+			Credential Service is a collection of easily usable, production-ready APIs for issuing digital
+			Credentials and building Trusted Data Markets.
+		</p>
+	</div>
+
+	<div class="flex flex-col w-full items-center mt-8">
+		<p class="text-primary-500 text-sm uppercase">Easy to get Started</p>
+
+		<p class="text-2xl mb-8 font-semibold">Benefits</p>
+	</div>
+
+	<div class="flex w-full flex-wrap justify-center px-20 gap-8">
+		<BenefitsCard
+			number={'01'}
+			title="Profitability"
+			description="New business model for issuers of Credentials, providing a new recurring revenue stream."
+		/>
+
+		<BenefitsCard
+			number={'02'}
+			title="Simplicity"
+			description="Issue Credentials in a few clicks, or lines of code."
+		/>
+
+		<BenefitsCard
+			number={'03'}
+			title="Compliance"
+			description="Meet regulatory requirements such as eIDAS 2.0."
+		/>
+
+		<BenefitsCard
+			number={'04'}
+			title="Scalability"
+			description="Production-ready performance with over 5,000 transactions per second."
+		/>
+		<BenefitsCard
+			number={'05'}
+			title="Flexibility"
+			description="Multiple options for custody and self-custody."
+		/>
+		<BenefitsCard
+			number={'06'}
+			title="Interoperability"
+			description="Credentials are compatible with other industry leaders, based on W3C standards."
+		/>
+	</div>
 </div>
