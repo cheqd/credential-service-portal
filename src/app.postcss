@@ -8,17 +8,20 @@ body {
 }
 
 .animated-bg {
-	background: linear-gradient(to left, #ffe5d9, #fff);
-	background-size: 200% center;
-	animation: slideBackground 2s linear infinite;
+	background: linear-gradient(to left, #ffe5d9, #fff, #ffe5d9);
+	background-size: 200% auto;
+	animation: slideBackground 25s linear infinite;
 	z-index: -30;
 }
 
 @keyframes slideBackground {
 	0% {
-		background-position: 100% 0;
+		background-position: -200% 0;
+	}
+	50% {
+		background-position: 0 0;
 	}
 	100% {
-		background-position: 0 0;
+		background-position: 200% 0;
 	}
 }

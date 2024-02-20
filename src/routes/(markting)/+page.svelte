@@ -22,7 +22,7 @@
 					class=" btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex py-4"
 				>
 					<CheqdIcon />
-					<span>Get Started</span>
+					<span>Get started</span>
 				</button>
 			</div>
 
