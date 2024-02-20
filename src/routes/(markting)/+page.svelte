@@ -12,7 +12,7 @@
 				<span class="font-bold text-primary-500">Service</span>
 			</div>
 
-			<p class="max-w-xl font-light lg:text-2xl my-4">
+			<p class="max-w-xl lg:font-light lg:text-2xl my-6">
 				The easiest and quickest way to start issuing credentials and getting paid
 			</p>
 
@@ -28,7 +28,7 @@
 
 			<img
 				src="/trust-triangle.png"
-				class="absolute h-80 w-80 object-cover lg:opacity-0 opacity-50 -z-20"
+				class="absolute h-80 w-80 object-cover lg:opacity-0 opacity-30 -z-20"
 				alt=""
 			/>
 		</div>
