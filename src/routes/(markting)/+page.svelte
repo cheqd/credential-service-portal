@@ -5,8 +5,8 @@
 </script>
 
 <div class="w-full h-full flex flex-col px-4 mb-8">
-	<div class="relative flex items-center justify-center">
-		<div class=" flex flex-col items-center lg:gap-6 text-center">
+	<div class="relative flex items-center justify-center animated-bg">
+		<div class=" flex flex-col items-center lg:items-start lg:gap-6 text-center lg:text-start">
 			<div class="flex flex-col lg:flex-row lg:gap-3 lg:text-6xl text-3xl mt-10">
 				<span class="font-bold text-black">Credential</span>
 				<span class="font-bold text-primary-500">Service</span>
@@ -16,7 +16,7 @@
 				The easiest and quickest way to start issuing credentials and getting paid
 			</p>
 
-			<div class="w-full flex justify-center">
+			<div class="w-full flex justify-center lg:justify-start">
 				<button
 					on:click={() => goto('/signin')}
 					class=" btn variant-filled-primary bg-primary-500 text-xl w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"

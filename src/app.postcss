@@ -6,3 +6,19 @@ html,
 body {
 	@apply h-full;
 }
+
+.animated-bg {
+	background: linear-gradient(to left, #ffe5d9, #fff);
+	background-size: 200% center;
+	animation: slideBackground 2s linear infinite;
+	z-index: -30;
+}
+
+@keyframes slideBackground {
+	0% {
+		background-position: 100% 0;
+	}
+	100% {
+		background-position: 0 0;
+	}
+}
