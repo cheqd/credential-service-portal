@@ -4,7 +4,7 @@
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
 </script>
 
-<div class="w-full h-full flex flex-col mb-8">
+<div class="w-full h-full flex flex-col">
 	<div class="relative flex items-center justify-center animated-bg px-8 min-h-[400px]">
 		<div class=" flex flex-col items-center md:items-start md:gap-6 text-center md:text-start">
 			<div class="flex flex-col md:flex-row md:gap-3 md:text-4xl lg:text-6xl text-3xl mt-10">
@@ -55,7 +55,7 @@
 		<p class="text-2xl md:text-4xl mb-8 font-semibold">Benefits</p>
 	</div>
 
-	<div class="flex w-full flex-wrap justify-center px-6 md:px-10 gap-8">
+	<div class="flex w-full flex-wrap justify-center px-6 md:px-10 gap-8 mb-10">
 		<BenefitsCard
 			number={'01'}
 			title="Profitability"
@@ -133,5 +133,19 @@
 			class="lg:w-1/2 object-cover max-h-[400px] w-[40%] hidden md:block"
 			alt=""
 		/>
+	</div>
+
+	<div
+		class="flex flex-col space-y-8 justify-end -mt-40 bg-gradient-to-r from-primary-50 to-[#e8ebf4] h-80 px-8 lg:px-20 pb-8"
+	>
+		<div class="w-full h-[0.8px] bg-gray-400"></div>
+		<div
+			class="w-full flex flex-col items-center lg:flex-row lg:justify-between text-lg font-light"
+		>
+			<p><span class="text-primary-400">@cheqd</span> 2024.All rights reserved.</p>
+			<a target="_blank" rel="noopener noreferrer" href="https://cheqd.io/privacy-policy/"
+				>Privacy Policy</a
+			>
+		</div>
 	</div>
 </div>
