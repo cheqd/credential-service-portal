@@ -36,7 +36,6 @@
 		<img src="/trust-triangle.png" class="lg:w-1/2 object-cover w-[45%] hidden md:block" alt="" />
 	</div>
 
-	<!-- <div class="h-screen bg-gradient-to-br from-primary-100 via-secondary-100 to-white"></div> -->
 	<div class="flex flex-col w-full items-center mt-8 px-4">
 		<p class="text-primary-500 text-sm uppercase">Issue digital credentials</p>
 
@@ -89,6 +88,50 @@
 			number={'06'}
 			title="Interoperability"
 			description="Credentials are compatible with other industry leaders, based on W3C standards."
+		/>
+	</div>
+
+	<div
+		class="relative flex items-center justify-center bg-[#fff3ed] p-8 max-h-[400px] mx-8 lg:mx-20 rounded-3xl mt-10 shadow-lg"
+	>
+		<div class=" flex flex-col items-center md:items-start space-y-4 text-center md:text-start">
+			<div class="uppercase items-center flex space-x-2 text-primary-400">
+				<span>Get in touch </span>
+				<span class="text-black h-[0.8px] w-20 bg-black hidden md:block"></span>
+			</div>
+			<div class="flex space-x-2 md:flex-row md:text-4xl lg:text-3xl text-2xl">
+				<span class="font-semibold text-black">Get</span>
+				<span class="font-semibold text-primary-500">started</span>
+			</div>
+
+			<p class="max-w-xl font-light">
+				If you’re an SSI Vendor, Consultancy, Enterprise, Government agency, or Web3 company please
+				contact us for a discovery call so we can learn about your use-case, problem statements, and
+				get you set up with cheqd.
+			</p>
+
+			<div class="w-full flex justify-center md:justify-start">
+				<button
+					on:click={() => {
+						window.open('https://cheqd.io/contact/', '_blank');
+					}}
+					class="z-20 btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex py-4"
+				>
+					<span>Contact us &#8599;</span>
+				</button>
+			</div>
+
+			<img
+				src="/trust-triangle.png"
+				class="absolute top-0 z-10 w-96 h-96 object-cover md:opacity-0 opacity-30 overflow-hidden"
+				alt=""
+			/>
+		</div>
+
+		<img
+			src="/trust-triangle.png"
+			class="lg:w-1/2 object-cover max-h-[400px] w-[40%] hidden md:block"
+			alt=""
 		/>
 	</div>
 </div>
