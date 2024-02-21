@@ -3,11 +3,19 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			logto: logtoClient;
+			user: UserInfoResponse | null;
+			callbackErr?: unknown;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
 	}
 }
+
+type logtoClient = LogtoClient & {
+	authTokenResponse?: AuthenticationTokenResponse;
+};
 
 export {};

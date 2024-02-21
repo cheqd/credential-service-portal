@@ -2,6 +2,35 @@
 	import { goto } from '$app/navigation';
 	import BenefitsCard from '$lib/components/BenefitsCard.svelte';
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { applyAction, enhance } from '$app/forms';
+
+	let isSignupLoading = false;
+	const handleSignupSubmit: SubmitFunction = () => {
+		isSignupLoading = true;
+
+		return async ({ result, update }) => {
+			console.log('result', update);
+			switch (result.type) {
+				case 'success':
+					window.open(result.data?.location || undefined, '_self');
+					break;
+				case 'failure':
+					// handle error here
+					await applyAction(result);
+					await update();
+					break;
+				case 'error':
+					// handle server side error here
+					await update();
+					await applyAction(result);
+					break;
+				default:
+					await update();
+			}
+			isSignupLoading = false;
+		};
+	};
 </script>
 
 <div class="w-full h-full flex flex-col px-4 mb-8">
@@ -17,13 +46,14 @@
 			</p>
 
 			<div class="w-full flex justify-center">
-				<button
-					on:click={() => goto('/signin')}
-					class=" btn variant-filled-primary bg-primary-500 text-xl w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"
-				>
-					<CheqdIcon />
-					<span>Get Started</span>
-				</button>
+				<form use:enhance={handleSignupSubmit} method="POST" action="/?/signup">
+					<button
+						class=" btn variant-filled-primary bg-primary-500 text-xl w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"
+					>
+						<CheqdIcon />
+						<span>Get Started</span>
+					</button>
+				</form>
 			</div>
 
 			<img
