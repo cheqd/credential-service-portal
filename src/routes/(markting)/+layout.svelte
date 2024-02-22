@@ -6,9 +6,6 @@
 </script>
 
 <AppShell>
-	<svelte:fragment slot="header">
-		<Header />
-	</svelte:fragment>
 	<slot />
 	<!-- <svelte:fragment slot="pageFooter">Page Footer</svelte:fragment> -->
 </AppShell>
