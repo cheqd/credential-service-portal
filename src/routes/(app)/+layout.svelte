@@ -3,11 +3,13 @@
 	import Sidebar from '$lib/components/sidebar.svelte';
 	import '../../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
+
+	export let data;
 </script>
 
 <AppShell>
 	<svelte:fragment slot="header">
-		<Header />
+		<Header user={data.user} class="bg-gradient-to-r from-primary-50 to-[#e8ebf4] h-20" />
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<Sidebar />

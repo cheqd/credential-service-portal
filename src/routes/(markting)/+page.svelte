@@ -3,6 +3,36 @@
 	import BenefitsCard from '$lib/components/BenefitsCard.svelte';
 	import Header from '$lib/components/header.svelte';
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { applyAction, enhance } from '$app/forms';
+	import LoaderIcon from '$lib/icons/LoaderIcon.svelte';
+
+	let isSignupLoading = false;
+	const handleSignupSubmit: SubmitFunction = () => {
+		isSignupLoading = true;
+
+		return async ({ result, update }) => {
+			console.log('result', update);
+			switch (result.type) {
+				case 'success':
+					window.open(result.data?.location || undefined, '_self');
+					break;
+				case 'failure':
+					// handle error here
+					await applyAction(result);
+					await update();
+					break;
+				case 'error':
+					// handle server side error here
+					await update();
+					await applyAction(result);
+					break;
+				default:
+					await update();
+			}
+			isSignupLoading = false;
+		};
+	};
 </script>
 
 <div class="w-full h-full flex flex-col">
@@ -18,16 +48,23 @@
 				<p class="max-w-xl md:font-light text-lg md:text-xl my-6">
 					The easiest and quickest way to start issuing credentials and getting paid
 				</p>
-
-				<div class="w-full flex justify-center md:justify-start">
+				<form
+					use:enhance={handleSignupSubmit}
+					method="POST"
+					action="/?/signup"
+					class="w-full flex justify-center md:justify-start"
+				>
 					<button
-						on:click={() => goto('/signin')}
 						class=" btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex py-4"
 					>
-						<CheqdIcon />
+						{#if isSignupLoading}
+							<LoaderIcon />
+						{:else}
+							<CheqdIcon />
+						{/if}
 						<span>Get started</span>
 					</button>
-				</div>
+				</form>
 
 				<img
 					src="/trust-triangle.png"
