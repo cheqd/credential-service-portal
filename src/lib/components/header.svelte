@@ -14,7 +14,7 @@
 >
 	<button
 		on:click={() => {
-			goto('/');
+			goto('/home');
 		}}
 	>
 		<img src="/cheqd-logo.png" class="md:h-10 h-5" />
