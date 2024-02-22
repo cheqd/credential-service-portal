@@ -5,23 +5,19 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
-	const { locals } = event;
-	console.log('locals', locals);
-	let authenticated = false;
+	const logtoAuth = await event.locals.logto.isAuthenticated();
+	const authenticated = logtoAuth && event.locals.user;
 
-	const pathname = event.url.pathname;
-	try {
-		authenticated = await locals.logto.isAuthenticated();
-		console.log('authenticted', authenticated);
-		locals.user = await locals.logto.fetchUserInfo();
-		console.log('current user', locals.user);
-	} catch (err) {
-		console.log('error in auth handler ', err);
-
-		return await resolve(event);
+	if (event.url.pathname === '/home' && !authenticated) {
+		throw redirect(303, '/');
 	}
-	console.log('authenticated', authenticated);
 
+	if (event.url.pathname === '/' && authenticated) {
+		throw redirect(301, '/home');
+	}
+	if (event.url.pathname === '/logto/callback' && authenticated) {
+		throw redirect(301, '/home');
+	}
 	return await resolve(event);
 };
 
@@ -30,6 +26,17 @@ export const logtoCallbackHander = async (event: RequestEvent) => {
 		console.error('error in handleSignInCallback: ', event.locals.callbackErr);
 		throw redirect(303, '/');
 	}
+};
+
+const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
+	try {
+		const user = await event.locals.logto.fetchUserInfo();
+		event.locals.user = user;
+	} catch (err) {
+		event.locals.user = null;
+	}
+
+	return await resolve(event);
 };
 
 const wrapLogtoAuthHandler = () => {
@@ -43,4 +50,8 @@ const wrapLogtoAuthHandler = () => {
 	);
 };
 
-export const handle = sequence(wrapLogtoAuthHandler(), authenticationHandler);
+export const handle = sequence(
+	wrapLogtoAuthHandler(),
+	setLogtoAuthenticatedUser,
+	authenticationHandler
+);

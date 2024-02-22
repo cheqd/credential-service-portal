@@ -37,21 +37,5 @@ export const actions: Actions = {
 				error: 'error performing signin with LogTo'
 			});
 		}
-	},
-	signout: async ({ url, locals }) => {
-		try {
-			await locals.logto.signOut(url.origin);
-		} catch (err) {
-			if (isSvelteKitRedirect(err)) {
-				return {
-					location: err.location
-				};
-			}
-
-			console.error('error in logout action: ', err);
-			return fail(400, {
-				error: 'error performing logout with LogTo'
-			});
-		}
 	}
 };

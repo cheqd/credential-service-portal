@@ -46,9 +46,14 @@
 			</p>
 
 			<div class="w-full flex justify-center">
-				<form use:enhance={handleSignupSubmit} method="POST" action="/?/signup">
+				<form
+					use:enhance={handleSignupSubmit}
+					method="POST"
+					action="/?/signup"
+					class="w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"
+				>
 					<button
-						class=" btn variant-filled-primary bg-primary-500 text-xl w-[2/3] lg:w-1/3 lg:h-14 rounded-xl flex"
+						class=" btn variant-filled-primary bg-primary-500 text-xl w-full lg:h-14 rounded-xl flex"
 					>
 						<CheqdIcon />
 						<span>Get Started</span>
