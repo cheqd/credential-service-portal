@@ -9,7 +9,7 @@
 >
 	<button
 		class="btn tracking-wide rounded-lg hover:bg-tertiary-300 flex gap-2 justify-start items-center w-full text-start"
-		on:click={() => goto('/')}
+		on:click={() => goto('/home')}
 	>
 		<HomeIcon class="h-5 w-5" />
 		Home
