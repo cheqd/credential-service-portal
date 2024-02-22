@@ -12,6 +12,10 @@ const authenticationHandler: Handle = async ({ event, resolve }) => {
 		throw redirect(303, '/');
 	}
 
+	if (event.url.pathname === '/billing' && !authenticated) {
+		throw redirect(303, '/');
+	}
+
 	if (event.url.pathname === '/' && authenticated) {
 		throw redirect(301, '/home');
 	}
