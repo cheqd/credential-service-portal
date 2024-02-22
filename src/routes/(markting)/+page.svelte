@@ -1,39 +1,43 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BenefitsCard from '$lib/components/BenefitsCard.svelte';
+	import Header from '$lib/components/header.svelte';
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
 </script>
 
 <div class="w-full h-full flex flex-col">
-	<div class="relative flex items-center justify-center animated-bg px-8 min-h-[400px]">
-		<div class=" flex flex-col items-center md:items-start md:gap-6 text-center md:text-start">
-			<div class="flex flex-col md:flex-row md:gap-3 md:text-4xl lg:text-6xl text-3xl mt-10">
-				<span class="font-bold text-black">Credential</span>
-				<span class="font-bold text-primary-500">Service</span>
+	<div class="flex flex-col w-full pt-4 animated-bg">
+		<Header />
+		<div class="relative flex items-center justify-center px-8 min-h-[400px]">
+			<div class=" flex flex-col items-center md:items-start md:gap-6 text-center md:text-start">
+				<div class="flex flex-col md:flex-row md:gap-3 md:text-4xl lg:text-6xl text-3xl mt-10">
+					<span class="font-bold text-black">Credential</span>
+					<span class="font-bold text-primary-500">Service</span>
+				</div>
+
+				<p class="max-w-xl md:font-light text-lg md:text-xl my-6">
+					The easiest and quickest way to start issuing credentials and getting paid
+				</p>
+
+				<div class="w-full flex justify-center md:justify-start">
+					<button
+						on:click={() => goto('/signin')}
+						class=" btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex py-4"
+					>
+						<CheqdIcon />
+						<span>Get started</span>
+					</button>
+				</div>
+
+				<img
+					src="/trust-triangle.png"
+					class="absolute h-80 w-80 object-cover md:opacity-0 opacity-30 -z-20"
+					alt=""
+				/>
 			</div>
 
-			<p class="max-w-xl md:font-light text-lg md:text-xl my-6">
-				The easiest and quickest way to start issuing credentials and getting paid
-			</p>
-
-			<div class="w-full flex justify-center md:justify-start">
-				<button
-					on:click={() => goto('/signin')}
-					class=" btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex py-4"
-				>
-					<CheqdIcon />
-					<span>Get started</span>
-				</button>
-			</div>
-
-			<img
-				src="/trust-triangle.png"
-				class="absolute h-80 w-80 object-cover md:opacity-0 opacity-30 -z-20"
-				alt=""
-			/>
+			<img src="/trust-triangle.png" class="lg:w-1/2 object-cover w-[45%] hidden md:block" alt="" />
 		</div>
-
-		<img src="/trust-triangle.png" class="lg:w-1/2 object-cover w-[45%] hidden md:block" alt="" />
 	</div>
 
 	<div class="flex flex-col w-full items-center mt-8 px-4">
