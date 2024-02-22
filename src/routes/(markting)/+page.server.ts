@@ -5,7 +5,7 @@ import type { Actions } from './$types';
 export const actions: Actions = {
 	signup: async ({ url, locals }) => {
 		const uri = new URL('/logto/callback', url.href);
-		console.log('uri', uri);
+
 		try {
 			await locals.logto.signIn(uri.toString(), 'signUp');
 		} catch (err) {

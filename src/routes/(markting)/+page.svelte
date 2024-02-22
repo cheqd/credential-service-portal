@@ -12,7 +12,6 @@
 		isSignupLoading = true;
 
 		return async ({ result, update }) => {
-			console.log('result', update);
 			switch (result.type) {
 				case 'success':
 					window.open(result.data?.location || undefined, '_self');

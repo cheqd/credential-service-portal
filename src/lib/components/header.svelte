@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { UserInfoResponse } from '@cntr/sveltekit';
 	import { twMerge } from 'tailwind-merge';
 
@@ -13,7 +14,7 @@
 >
 	<button
 		on:click={() => {
-			console.log('on click');
+			goto('/');
 		}}
 	>
 		<img src="/cheqd-logo.png" class="md:h-10 h-5" />
