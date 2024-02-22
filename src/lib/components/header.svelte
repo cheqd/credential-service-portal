@@ -24,7 +24,7 @@
 			<span class="hidden md:block">Already have an account?</span>
 			<div class="flex justify-end md:justify-start">
 				<button
-					class="btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-3xl flex"
+					class="btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-2xl flex"
 				>
 					<span>Sign in</span>
 				</button>
