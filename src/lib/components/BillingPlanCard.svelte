@@ -12,7 +12,7 @@
 	class="flex-shrink-0 w-72 lg:w-80 rounded border bg-[#e8ebf4] border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
 >
 	<span class="text-3xl font-semibold text-primary-500">{title} </span>
-	<p class="text-tertiary-700">{description}</p>
+	<p class="text-tertiary-900">{description}</p>
 	<div class="h-px w-full bg-tertiary-300"></div>
 	<div class="flex gap-2 items-end text-tertiary-900 py-3">
 		{#if isCustom}
@@ -29,7 +29,7 @@
 	<button class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400"
 		>Upgrade to {title} now</button
 	>
-	<div class="flex flex-col text-surface-900">
+	<div class="flex flex-col text-tertiary-900">
 		<span class="font-semibold">{featuresTitle}:</span>
 		<div class="flex flex-col gap-3 py-3">
 			{#each features as feat}
