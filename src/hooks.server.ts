@@ -7,20 +7,20 @@ import { env as privEnv } from '$env/dynamic/private';
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
 	const authenticated = logtoAuth && event.locals.user;
-
-	if (event.url.pathname === '/home' && !authenticated) {
-		throw redirect(303, '/');
-	}
-
-	if (event.url.pathname === '/billing' && !authenticated) {
-		throw redirect(303, '/');
-	}
-
-	if (event.url.pathname === '/' && authenticated) {
-		throw redirect(301, '/home');
-	}
-	if (event.url.pathname === '/logto/callback' && authenticated) {
-		throw redirect(301, '/home');
+	const pathname = event.url.pathname;
+	switch (pathname) {
+		case '/home':
+		case '/billing':
+			if (!authenticated) {
+				throw redirect(303, '/');
+			}
+			break;
+		case '/':
+		case '/logto/callback':
+			if (authenticated) {
+				throw redirect(301, '/home');
+			}
+			break;
 	}
 	return await resolve(event);
 };
