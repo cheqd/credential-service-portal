@@ -1,8 +1,8 @@
 {
 	"name": "@cheqd/credential-service-portal",
 	"version": "1.1.0-develop.1",
-	"private": true,
-	"description": "Management portal for credential service",
+	"description": "Credential Service Management Portal",
+	"license": "Apache-2.0",
 	"author": "Cheqd Foundation Limited (https://github.com/cheqd)",
 	"repository": "https://github.com/cheqd/credential-service-portal.git",
 	"keywords": [
@@ -17,6 +17,13 @@
 		"url": "https://github.com/cheqd/credential-service-portal/issues"
 	},
 	"homepage": "https://github.com/cheqd/credential-service-portal#readme",
+	"type": "module",
+	"files": [
+		".svelte-kit/**/*",
+		"LICENSE",
+		"package.json",
+		"README.md"
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -24,8 +31,8 @@
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
+		"format": "prettier --write '**/*.{js,ts,cjs,mjs,json}'",
+		"lint": "eslint --max-warnings=0 src && prettier --check '**/*.{js,ts,cjs,mjs,json}'",
 		"test:integration": "playwright test",
 		"test:unit": "vitest"
 	},
@@ -68,13 +75,6 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.2.0"
 	},
-	"type": "module",
-	"files": [
-		".svelte-kit/**/*",
-		"LICENSE",
-		"package.json",
-		"README.md"
-	],
 	"browserslist": {
 		"production": [
 			">10%",
@@ -87,6 +87,6 @@
 		]
 	},
 	"engines": {
-		"node": ">=20.11.0"
+		"node": ">=20.0.0"
 	}
 }

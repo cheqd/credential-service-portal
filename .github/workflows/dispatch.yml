@@ -8,9 +8,11 @@ jobs:
   call-lint:
     name: "Lint"
     uses: ./.github/workflows/lint.yml
+
   call-build:
     name: "Build & Test"
     uses: ./.github/workflows/build.yml
+
   call-release:
     name: "Release"
     needs: [ call-lint, call-build ]
