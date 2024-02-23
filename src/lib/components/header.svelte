@@ -53,18 +53,24 @@
 	export let openDrawer: () => void;
 </script>
 
-<AppBar background="bg-gradient-to-b from-primary-50 to-[#e8ebf4] shadow-lg">
+<AppBar
+	background={user && $page.url.pathname !== '/'
+		? 'bg-gradient-to-b from-primary-50 to-[#e8ebf4] shadow-lg lg:px-8'
+		: 'lg:px-8'}
+>
 	<svelte:fragment slot="lead">
 		<div class="flex items-center">
-			<button class="lg:hidden btn btn-sm mr-4" on:click={openDrawer}>
-				<span>
-					<svg viewBox="0 0 100 80" class="fill-primary-400 w-5 h-5 md:w-6 md:h-6">
-						<rect width="100" height="20" />
-						<rect y="30" width="100" height="20" />
-						<rect y="60" width="100" height="20" />
-					</svg>
-				</span>
-			</button>
+			{#if user && $page.url.pathname !== '/'}
+				<button class="lg:hidden btn btn-sm mr-4" on:click={openDrawer}>
+					<span>
+						<svg viewBox="0 0 100 80" class="fill-primary-400 w-5 h-5 md:w-6 md:h-6">
+							<rect width="100" height="20" />
+							<rect y="30" width="100" height="20" />
+							<rect y="60" width="100" height="20" />
+						</svg>
+					</span>
+				</button>
+			{/if}
 			<button
 				on:click={() => {
 					goto('/home');
@@ -74,19 +80,20 @@
 			</button>
 		</div>
 	</svelte:fragment>
+
 	<svelte:fragment slot="trail">
 		{#if !user && $page.url.pathname === '/'}
 			<form
 				method="POST"
 				action="/?/signin"
-				class="flex space-x-2 w-1/2 items-center justify-end"
+				class="flex space-x-2 w-full items-center justify-end"
 				use:enhance={handleSigninSubmit}
 			>
 				<span class="hidden md:block">Already have an account?</span>
 
 				<div class="flex justify-end md:justify-start">
 					<button
-						class="btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-2xl flex"
+						class="btn btn-sm text-sm bg-gradient-to-r from-primary-500 to-primary-400 text-white md:text-base rounded-xl flex"
 					>
 						{#if isSigninLoading}
 							<LoaderIcon />
