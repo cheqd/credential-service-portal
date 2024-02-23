@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           # Semantic release needs at least Node v20.8.1, we're switching to Node v20.11.0 LTS
-          node-version: 20.11.0
+          node-version: 20
           cache: "npm"
 
       - name: "Obtain Github App token"

@@ -1,4 +1,20 @@
-# Ignore files for PNPM, NPM and YARN
+# Ignore folders
+.DS_Store
+.github
+.svelte-kit
+node_modules
+dist
+playwright
+playwright-report
+
+# Ignore files
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+*.md
+*.yaml
+*.yml
+**/tsconfig.json
+
+# Ignore generated files
+src/static/swagger.json
