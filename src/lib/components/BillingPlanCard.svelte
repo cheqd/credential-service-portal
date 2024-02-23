@@ -9,7 +9,7 @@
 </script>
 
 <div
-	class="rounded border border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
+	class="flex-shrink-0 w-80 rounded border border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
 >
 	<span class="text-3xl font-semibold text-primary-500">{title} </span>
 	<p class="text-tertiary-700">{description}</p>
@@ -26,7 +26,7 @@
 			<span>mo</span>
 		{/if}
 	</div>
-	<button class="btn variant-filled-primary px-6 text-lg w-full my-3 bg-primary-400"
+	<button class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400"
 		>Upgrade to {title} now</button
 	>
 	<div class="flex flex-col text-surface-900">
