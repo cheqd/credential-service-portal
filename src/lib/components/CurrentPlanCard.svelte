@@ -11,10 +11,10 @@
 			Try our features for free with a 14-day trial on our testing environment and assess whether
 			they meet your requirements.
 		</p>
-		<div class="flex lg:flex-col lg:gap-2 gap-9">
+		<div class="flex flex-col lg:gap-2">
 			<div class="flex flex-col lg:grid grid-cols-4 gap-3 lg:space-x-6 text-tertiary-700">
 				<span class="flex gap-1 items-center"
-					><CheckIcon class="text-success-400" />1 organisation</span
+					><CheckIcon class="text-success-400" />1 organization</span
 				>
 				<span class="flex gap-1 items-center"
 					><CheckIcon class="text-success-400" />Create 10 Credentials</span

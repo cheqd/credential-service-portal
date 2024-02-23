@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import BenefitsCard from '$lib/components/BenefitsCard.svelte';
 	import Header from '$lib/components/header.svelte';
 	import CheqdIcon from '$lib/icons/CheqdIcon.svelte';
@@ -36,7 +35,7 @@
 
 <div class="w-full h-full flex flex-col">
 	<div class="flex flex-col w-full pt-4 animated-bg">
-		<Header />
+		<Header openDrawer={() => {}} />
 		<div class="relative flex items-center justify-center px-8 min-h-[400px]">
 			<div class=" flex flex-col items-center md:items-start md:gap-6 text-center md:text-start">
 				<div class="flex flex-col md:flex-row md:gap-3 md:text-4xl lg:text-6xl text-3xl mt-10">
