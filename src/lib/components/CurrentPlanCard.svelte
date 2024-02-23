@@ -4,10 +4,10 @@
 
 <div class="flex flex-col gap-3">
 	<span class="text-3xl tracking-wide font-semibold">Plan & Billing</span>
-	<div class=" rounded-lg border border-tertiary-300 p-6 flex flex-col gap-5">
+	<div class=" rounded-lg border border-tertiary-300 p-6 flex flex-col gap-5 animated-bg">
 		<span class="text-4xl text-primary-500/80 tracking-wide font-semibold">My Plan: Free Trial</span
 		>
-		<p class="text-tertiary-600">
+		<p class="text-tertiary-800">
 			Try our features for free with a 14-day trial on our testing environment and assess whether
 			they meet your requirements.
 		</p>
