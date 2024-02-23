@@ -4,7 +4,10 @@
 	"description": "Credential Service Management Portal",
 	"license": "Apache-2.0",
 	"author": "Cheqd Foundation Limited (https://github.com/cheqd)",
-	"repository": "https://github.com/cheqd/credential-service-portal.git",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cheqd/credential-service-portal.git"
+	},
 	"keywords": [
 		"cheqd",
 		"ssi",
