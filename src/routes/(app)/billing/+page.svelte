@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BillingPlanCard from '$lib/components/BillingPlanCard.svelte';
 	import CheckIcon from '$lib/icons/checkIcon.svelte';
 </script>
 
@@ -50,113 +51,50 @@
 				<p class=" text-tertiary-600">Simple and transparent pricing that grows with you.</p>
 			</div>
 			<div class="flex flex-col justify-start lg:grid grid-cols-3 place-content-center gap-12">
-				<div
-					class="rounded border border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
-				>
-					<span class="text-3xl font-semibold text-primary-500">Starter </span>
-					<p class="text-tertiary-700">Get a hands-On experience of caas with Splash</p>
-					<div class="h-px w-full bg-tertiary-300"></div>
-					<div class="flex gap-2 items-end text-tertiary-900 py-3">
-						<span>from</span>
-						<span class="text-4xl font-bold">$99</span>
-						<span>/</span>
-						<span>mo</span>
-					</div>
-					<button class="btn variant-filled-primary px-6 text-lg w-full my-3 bg-primary-400"
-						>Upgrade to Starter now</button
-					>
-					<div class="flex flex-col text-surface-900">
-						<span class="font-semibold">Everything in Free trial and:</span>
-						<div class="flex flex-col gap-3 py-3">
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Credential Verification</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Create 10 Credentials</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Email Support</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Test Environment</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />API access</span
-							>
-						</div>
-					</div>
-				</div>
+				<BillingPlanCard
+					title="Starter"
+					description="Get a hands-On experience of Credential Service"
+					pricing={99}
+					featuresTitle="Everything in Free trial and"
+					features={[
+						'Credential Verification',
+						'Create 10 Credentials',
+						'Email Support',
+						'Test Environment',
+						'API access'
+					]}
+					isCustom={false}
+				/>
 
-				<div
-					class="rounded border border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
-				>
-					<span class="text-3xl font-semibold text-primary-500">Business </span>
-					<p class="text-tertiary-700">Get a hands-On experience of caas with Splash</p>
-					<div class="h-px w-full bg-tertiary-300"></div>
-					<div class="flex gap-2 items-end text-tertiary-900 py-3">
-						<span>from</span>
-						<span class="text-4xl font-bold">$499</span>
-						<span>/</span>
-						<span>mo</span>
-					</div>
-					<button class="btn variant-filled-primary bg-primary-400 px-6 text-lg w-full my-3"
-						>Upgrade to Business now</button
-					>
-					<div class="flex flex-col text-surface-900">
-						<span class="font-semibold">Everything in Starter and:</span>
-						<div class="flex flex-col gap-3 py-3">
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Credential Verification</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Create 10 Credentials</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Email Support</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Test Environment</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />API access</span
-							>
-						</div>
-					</div>
-				</div>
+				<BillingPlanCard
+					title="Business"
+					description="Get a hands-On experience of Credential Service"
+					pricing={499}
+					featuresTitle="Everything in Starter and"
+					features={[
+						'Credential Verification',
+						'Create 10 Credentials',
+						'Email Support',
+						'Test Environment',
+						'API access'
+					]}
+					isCustom={false}
+				/>
 
-				<div
-					class="rounded border border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
-				>
-					<span class="text-3xl font-semibold text-primary-500">Custom </span>
-					<p class="text-tertiary-700">Get a hands-On experience of caas with Splash</p>
-					<div class="h-px w-full bg-tertiary-300"></div>
-					<div class="flex gap-2 items-end text-tertiary-900 py-3">
-						<span class="text-4xl font-bold">Talk to us</span>
-					</div>
-					<button class="btn variant-filled-primary px-6 text-lg w-full my-3 bg-primary-400"
-						>Contact Us</button
-					>
-					<div class="flex flex-col text-surface-900">
-						<span class="font-semibold">Everything in Business and:</span>
-						<div class="flex flex-col gap-3 py-3">
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Credential Verification</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Create 10 Credentials</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Email Support</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />Test Environment</span
-							>
-							<span class="flex gap-1 items-center"
-								><CheckIcon class="text-success-400" />API access</span
-							>
-						</div>
-					</div>
-				</div>
+				<BillingPlanCard
+					title="Custom"
+					description="Get a hands-On experience of Credential Service"
+					pricing={-1}
+					featuresTitle="Everything in Business and"
+					features={[
+						'Credential Verification',
+						'Create 10 Credentials',
+						'Email Support',
+						'Test Environment',
+						'API access'
+					]}
+					isCustom={true}
+				/>
 			</div>
 		</div>
 	</div>
