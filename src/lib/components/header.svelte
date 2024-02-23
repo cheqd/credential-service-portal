@@ -96,7 +96,7 @@
 						class="btn btn-sm text-sm bg-gradient-to-r from-primary-500 to-primary-400 text-white md:text-base rounded-xl flex"
 					>
 						{#if isSigninLoading}
-							<LoaderIcon />
+							<LoaderIcon class="h-4 w-4" />
 						{/if}
 						<span>Sign in</span>
 					</button>
