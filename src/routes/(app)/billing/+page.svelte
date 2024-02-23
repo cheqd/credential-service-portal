@@ -11,7 +11,9 @@
 				<span class="text-3xl tracking-wide font-semibold">All Plans</span>
 				<p class=" text-tertiary-600">Simple and transparent pricing that grows with you.</p>
 			</div>
-			<div class="flex overflow-x-scroll space-x-8 p-4 justify-start">
+			<div
+				class="no-scrollbar flex overflow-x-scroll space-x-8 p-4 justify-start -mx-4 lg:mx-0 overscroll-y-none"
+			>
 				<BillingPlanCard
 					title="Starter"
 					description="Get a hands-On experience of Credential Service"
