@@ -3,11 +3,9 @@
 	import { goto } from '$app/navigation';
 	import type { UserInfoResponse } from '@cntr/sveltekit';
 	import type { SubmitFunction } from '@sveltejs/kit';
-	import { twMerge } from 'tailwind-merge';
 	import { page } from '$app/stores';
 	import LoaderIcon from '$lib/icons/LoaderIcon.svelte';
-
-	export let user: UserInfoResponse | null = null;
+	import { AppBar } from '@skeletonlabs/skeleton';
 
 	let isSigninLoading = false;
 	const handleSigninSubmit: SubmitFunction = () => {
@@ -50,52 +48,65 @@
 		isSignOutLoading = false;
 		console.error('signout error: ', await response.text());
 	};
+
+	export let user: UserInfoResponse | null = null;
+	export let openDrawer: () => void;
 </script>
 
-<div
-	class={twMerge(
-		'flex relative w-full justify-between items-center md:px-16 px-8 z-50 bg-inherit',
-		$$props['class']
-	)}
->
-	<button
-		on:click={() => {
-			goto('/home');
-		}}
-	>
-		<img src="/cheqd-logo.png" class="md:h-10 h-5" />
-	</button>
-	{#if !user && $page.url.pathname === '/'}
-		<form
-			method="POST"
-			action="/?/signin"
-			class="flex space-x-2 w-1/2 items-center justify-end"
-			use:enhance={handleSigninSubmit}
-		>
-			<span class="hidden md:block">Already have an account?</span>
+<AppBar background="bg-gradient-to-b from-primary-50 to-[#e8ebf4] shadow-lg">
+	<svelte:fragment slot="lead">
+		<div class="flex items-center">
+			<button class="lg:hidden btn btn-sm mr-4" on:click={openDrawer}>
+				<span>
+					<svg viewBox="0 0 100 80" class="fill-primary-400 w-5 h-5 md:w-6 md:h-6">
+						<rect width="100" height="20" />
+						<rect y="30" width="100" height="20" />
+						<rect y="60" width="100" height="20" />
+					</svg>
+				</span>
+			</button>
+			<button
+				on:click={() => {
+					goto('/home');
+				}}
+			>
+				<img src="/cheqd-logo.png" class="md:h-10 h-5" />
+			</button>
+		</div>
+	</svelte:fragment>
+	<svelte:fragment slot="trail">
+		{#if !user && $page.url.pathname === '/'}
+			<form
+				method="POST"
+				action="/?/signin"
+				class="flex space-x-2 w-1/2 items-center justify-end"
+				use:enhance={handleSigninSubmit}
+			>
+				<span class="hidden md:block">Already have an account?</span>
 
-			<div class="flex justify-end md:justify-start">
-				<button
-					class="btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-2xl flex"
-				>
-					{#if isSigninLoading}
-						<LoaderIcon />
-					{/if}
-					<span>Sign in</span>
-				</button>
-			</div>
-		</form>
-	{/if}
+				<div class="flex justify-end md:justify-start">
+					<button
+						class="btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-2xl flex"
+					>
+						{#if isSigninLoading}
+							<LoaderIcon />
+						{/if}
+						<span>Sign in</span>
+					</button>
+				</div>
+			</form>
+		{/if}
 
-	{#if user && $page.url.pathname !== '/'}
-		<button
-			on:click={handleSignout}
-			class=" btn bg-gradient-to-r from-primary-500 to-primary-400 text-white text-xl rounded-2xl flex py-2"
-		>
-			{#if isSignOutLoading}
-				<LoaderIcon />
-			{/if}
-			<span>Sign out</span>
-		</button>
-	{/if}
-</div>
+		{#if user && $page.url.pathname !== '/'}
+			<button
+				on:click={handleSignout}
+				class="btn btn-sm text-sm bg-gradient-to-r from-primary-500 to-primary-400 text-white md:text-base rounded-xl flex"
+			>
+				{#if isSignOutLoading}
+					<LoaderIcon />
+				{/if}
+				<span>Sign out</span>
+			</button>
+		{/if}
+	</svelte:fragment>
+</AppBar>
