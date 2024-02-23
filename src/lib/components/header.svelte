@@ -76,7 +76,7 @@
 					goto('/home');
 				}}
 			>
-				<img src="/cheqd-logo.png" class="md:h-10 h-5" />
+				<img alt="cheqd logo" src="/cheqd-logo.png" class="md:h-10 h-5" />
 			</button>
 		</div>
 	</svelte:fragment>

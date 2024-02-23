@@ -21,7 +21,7 @@
 		}}
 		class="p-4"
 	>
-		<img src="/cheqd-logo.png" class="h-10" />
+		<img alt="cheqd logo" src="/cheqd-logo.png" class="h-10" />
 	</button>
 	<div class="bg-tertiary-500 h-[0.5px]" />
 	<Navigation closeDrawer={drawerStore.close} />
