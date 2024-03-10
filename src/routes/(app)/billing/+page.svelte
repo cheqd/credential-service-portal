@@ -1,6 +1,31 @@
 <script lang="ts">
 	import BillingPlanCard from '$lib/components/BillingPlanCard.svelte';
 	import CurrentPlanCard from '$lib/components/CurrentPlanCard.svelte';
+	export let data;
+
+	export const createSession = async () => {
+
+		console.log('clicked')
+		console.log(data.idToken);
+        // console.log(event.locals.idToken);
+		const requestBody = {
+			// Here we need to setup the corresponding price of the product which should be get from CaaS
+			price: 'price_1OoTbhC3ipfGA3blG7111wsv',
+			successURL: 'https://d5ec-79-140-150-148.ngrok-free.app',
+			cancelURL: 'https://d5ec-79-140-150-148.ngrok-free.app/admin/swagger'
+		};
+		const response = await fetch('/api/billing', {
+			method: 'POST',
+			body: JSON.stringify(requestBody),
+			headers: {
+				'content-type': 'application/json',
+				'id-token': `${data.idToken}`
+
+			}
+		});
+		window.location.href = (await response.json()).url;
+	};
+
 </script>
 
 <div class=" h-full w-full flex flex-col gap-9">
@@ -25,6 +50,7 @@
 						'API access'
 					]}
 					isCustom={false}
+					{createSession}
 				/>
 
 				<BillingPlanCard
@@ -40,6 +66,7 @@
 						'API access'
 					]}
 					isCustom={false}
+					{createSession}
 				/>
 
 				<BillingPlanCard
@@ -55,6 +82,7 @@
 						'API access'
 					]}
 					isCustom={true}
+					{createSession}
 				/>
 			</div>
 		</div>

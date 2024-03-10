@@ -6,6 +6,7 @@
 	export let featuresTitle: string;
 	export let features: string[];
 	export let isCustom: boolean = false;
+	export let createSession: () => Promise<void>;
 </script>
 
 <div
@@ -27,7 +28,10 @@
 		{/if}
 	</div>
 	<button class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400"
-		>Upgrade to {title} now</button
+		 on:click={createSession}
+		>Upgrade to {title} now
+		</button
+
 	>
 	<div class="flex flex-col text-tertiary-900">
 		<span class="font-semibold">{featuresTitle}:</span>

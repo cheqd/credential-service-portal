@@ -16,6 +16,7 @@ const authenticationHandler: Handle = async ({ event, resolve }) => {
 			}
 			break;
 		case '/':
+			break;
 		case '/logto/callback':
 			if (authenticated) {
 				throw redirect(301, '/home');
@@ -35,9 +36,12 @@ export const logtoCallbackHander = async (event: RequestEvent) => {
 const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
 	try {
 		const user = await event.locals.logto.fetchUserInfo();
+		const idToken = await event.locals.logto.getIdToken();
 		event.locals.user = user;
+		event.locals.idToken = idToken;
 	} catch (err) {
 		event.locals.user = null;
+		event.locals.idToken = null;
 	}
 
 	return await resolve(event);

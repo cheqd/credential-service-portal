@@ -6,6 +6,7 @@ declare global {
 		interface Locals {
 			logto: logtoClient;
 			user: UserInfoResponse | null;
+			idToken: string | null;
 			callbackErr?: unknown;
 		}
 		// interface PageData {}
