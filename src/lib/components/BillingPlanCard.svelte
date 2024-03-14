@@ -6,12 +6,16 @@
 	export let featuresTitle: string;
 	export let features: string[];
 	export let isCustom: boolean = false;
-	export let createSession: () => Promise<void>;
+	export let isCurrentPlan: boolean = false;
+	export let priceId: string;
+	export let createSession: (priceId: string) => Promise<void>;
+
+	$: console.log('isCurrent', isCurrentPlan, title);
+	$: console.log('is Custom', isCustom, title);
+	const styling = `flex-shrink-0 w-72 lg:w-80 rounded border ${isCurrentPlan ? 'bg-gray-100 border-primary-400' : 'bg-[#e8ebf4] hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white'}  border-tertiary-200 shadow-lg  flex flex-col gap-3 p-6 items-start`;
 </script>
 
-<div
-	class="flex-shrink-0 w-72 lg:w-80 rounded border bg-[#e8ebf4] border-tertiary-200 shadow-lg hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white flex flex-col gap-3 p-6 items-start"
->
+<div class={styling}>
 	<span class="text-3xl font-semibold text-primary-500">{title} </span>
 	<p class="text-tertiary-900">{description}</p>
 	<div class="h-px w-full bg-tertiary-300"></div>
@@ -27,12 +31,15 @@
 			<span>mo</span>
 		{/if}
 	</div>
-	<button class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400"
-		 on:click={createSession}
-		>Upgrade to {title} now
-		</button
-
+	<button
+		class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400 w-full"
+		on:click={() => {
+			createSession(priceId);
+		}}
+		disabled={isCurrentPlan}
 	>
+		{isCurrentPlan ? `Current Plan: ${title}` : `Switch to ${title} now`}
+	</button>
 	<div class="flex flex-col text-tertiary-900">
 		<span class="font-semibold">{featuresTitle}:</span>
 		<div class="flex flex-col gap-3 py-3">
