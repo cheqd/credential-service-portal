@@ -1,4 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
+
+import type { CredentialServiceBillingSever } from '$lib/api/credentialService';
+
 // for information about these interfaces
 declare global {
 	namespace App {
@@ -8,6 +11,7 @@ declare global {
 			user: UserInfoResponse | null;
 			idToken: string | null;
 			callbackErr?: unknown;
+			credentialServiceBillingApi: CredentialServiceBillingSever;
 		}
 		// interface PageData {}
 		// interface PageState {}
