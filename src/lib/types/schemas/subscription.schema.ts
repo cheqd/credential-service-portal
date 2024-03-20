@@ -18,8 +18,8 @@ export const SubscriptionSchema = z.object({
 	quantity: z.number()
 });
 
-export const GetSubscriptionsResponseSchema = z.object({
-	subscriptions: z.object({
+export const GetSubscriptionResponseSchema = z.object({
+	subscription: z.object({
 		data: z.array(SubscriptionSchema)
 	})
 });

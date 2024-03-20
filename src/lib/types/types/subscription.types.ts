@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 import type {
-	GetSubscriptionsResponseSchema,
+	GetSubscriptionResponseSchema,
 	SubscriptionPlanSchema,
 	SubscriptionSchema
 } from '../schemas/subscription.schema';
 
-export type GetSubscriptionsResponse = z.infer<typeof GetSubscriptionsResponseSchema>;
+export type GetSubscriptionResponse = z.infer<typeof GetSubscriptionResponseSchema>;
 export type Subscription = z.infer<typeof SubscriptionSchema>;
 export type SubscriptionPlan = z.infer<typeof SubscriptionPlanSchema>;

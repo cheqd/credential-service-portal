@@ -10,7 +10,7 @@
 
 	let isLoadingProducts = false;
 	let products: Product[];
-	let currentSubscription: Subscription;
+	let currentSubscription: Subscription | null;
 	let currentPlan: Product;
 
 	export const createSession = async (priceId: string) => {
@@ -43,9 +43,13 @@
 	onMount(async () => {
 		isLoadingProducts = true;
 		products = data.products;
-		currentSubscription = data.subscriptions[data.subscriptions.length - 1];
-
-		currentPlan = products.filter((p) => p.id === currentSubscription.plan.product)[0];
+		currentSubscription = data.subscription;
+		console.log('current sub', currentSubscription);
+		console.log('data', data);
+		currentPlan = products.filter(
+			(p) => p.id === currentSubscription?.items.data[0].plan.product
+		)[0];
+		console.log('current plan', currentPlan);
 		isLoadingProducts = false;
 	});
 </script>
@@ -72,7 +76,7 @@
 					<p class=" text-tertiary-600">Simple and transparent pricing that grows with you.</p>
 				</div>
 				<div class="no-scrollbar flex overflow-x-scroll space-x-8 p-4 justify-start -mx-8 lg:mx-0">
-					{#if products && currentSubscription}
+					{#if products}
 						{#each products as p}
 							<BillingPlanCard
 								title={p.name}
@@ -82,7 +86,7 @@
 								features={p.features.map((f) => f.name)}
 								isCustom={p.name.toLowerCase() === 'custom'}
 								{createSession}
-								isCurrentPlan={p.id === currentSubscription.plan.product}
+								isCurrentPlan={true}
 								priceId={p.prices[0].id}
 							/>
 						{/each}

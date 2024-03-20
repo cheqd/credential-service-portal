@@ -1,9 +1,7 @@
 import type { CredentialServiceApiResponse, GenericErrorResponse } from './helpers';
 import { env } from '$env/dynamic/private';
 import type { GetProductsListResponse } from '$lib/types/types/product.types';
-import { GetProductsListResponseSchema } from '$lib/types/schemas/product.schema';
-import type { GetSubscriptionsResponse } from '$lib/types/types/subscription.types';
-import { GetSubscriptionsResponseSchema } from '$lib/types/schemas/subscription.schema';
+import type { GetSubscriptionResponse } from '$lib/types/types/subscription.types';
 import { jwtDecode } from 'jwt-decode';
 
 export type AuthenticationTokenResponse = {
@@ -110,7 +108,7 @@ export class CredentialServiceBillingSever {
 
 	async getCurrentSubscription(
 		initOptions?: RequestInit
-	): Promise<CredentialServiceApiResponse<GetSubscriptionsResponse, GenericErrorResponse>> {
+	): Promise<CredentialServiceApiResponse<GetSubscriptionResponse, GenericErrorResponse>> {
 		const uri = new URL(`/admin/subscription/get`, this.apiEndpoint);
 
 		const response = await this.fetch(uri, {
@@ -132,7 +130,7 @@ export class CredentialServiceBillingSever {
 			};
 		}
 
-		// const parsed = GetSubscriptionsResponseSchema.safeParse(data);
+		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
 		// if (!parsed.success) {
 		// 	return {
 		// 		success: false,
@@ -143,7 +141,7 @@ export class CredentialServiceBillingSever {
 
 		return {
 			success: true,
-			data: data as GetSubscriptionsResponse,
+			data: data as GetSubscriptionResponse,
 			status: response.status
 		};
 	}
