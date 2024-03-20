@@ -6,7 +6,6 @@ import type { GetSubscriptionsResponse } from '$lib/types/types/subscription.typ
 import { GetSubscriptionsResponseSchema } from '$lib/types/schemas/subscription.schema';
 import { jwtDecode } from 'jwt-decode';
 
-
 export type AuthenticationTokenResponse = {
 	access_token: string;
 	expires_in: number;
@@ -20,13 +19,13 @@ export class CredentialServiceBillingSever {
 	private _m2mToken: string = '';
 
 	private async getHeaders(): Promise<Record<string, string>> {
-		const m2mToken = this._m2mToken && await this.isM2MNotExpired()
-		? this._m2mToken
-		: await this.issueM2MToken();
+		const m2mToken =
+			this._m2mToken && (await this.isM2MNotExpired())
+				? this._m2mToken
+				: await this.issueM2MToken();
 		return {
-			'Authorization': `Bearer ${m2mToken}`
+			Authorization: `Bearer ${m2mToken}`
 		};
-	
 	}
 
 	private async isM2MNotExpired(): Promise<boolean> {
@@ -39,7 +38,7 @@ export class CredentialServiceBillingSever {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
 			resource: env.LOGTO_MANAGEMENT_API,
-			scope: 'all',
+			scope: 'all'
 		});
 
 		const uri = new URL('/oidc/token', env.LOGTO_ENDPOINT);
@@ -51,8 +50,8 @@ export class CredentialServiceBillingSever {
 			body: searchParams,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: token,
-			},
+				Authorization: token
+			}
 		});
 		const data = await response.json();
 		if (response.status === 200) {
@@ -71,16 +70,16 @@ export class CredentialServiceBillingSever {
 	}
 
 	async listProducts(
-		prices: boolean = false,
+		prices: boolean = true,
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<GetProductsListResponse, GenericErrorResponse>> {
-		const uri = new URL(`/admin/products/list?prices=${prices}`, this.apiEndpoint);
+		const uri = new URL(`/admin/product/list?prices=${prices}`, this.apiEndpoint);
 
 		const response = await this.fetch(uri, {
 			...initOptions,
 			headers: {
 				...initOptions?.headers,
-				...await this.getHeaders()
+				...(await this.getHeaders())
 			}
 		});
 
@@ -93,36 +92,38 @@ export class CredentialServiceBillingSever {
 			};
 		}
 
-		const parsed = GetProductsListResponseSchema.safeParse(data);
-		if (!parsed.success) {
-			return {
-				success: false,
-				status: 406,
-				error: parsed.error.toString()
-			};
-		}
+		// const parsed = GetProductsListResponseSchema.safeParse(data);
+		// if (!parsed.success) {
+		// 	return {
+		// 		success: false,
+		// 		status: 406,
+		// 		error: parsed.error.toString()
+		// 	};
+		// }
 
 		return {
 			success: true,
-			data: parsed.data,
+			data: data as GetProductsListResponse,
 			status: response.status
 		};
 	}
 
-	async listSubscription(
+	async getCurrentSubscription(
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<GetSubscriptionsResponse, GenericErrorResponse>> {
-		const uri = new URL(`/admin/subscription/list`, this.apiEndpoint);
+		const uri = new URL(`/admin/subscription/get`, this.apiEndpoint);
 
 		const response = await this.fetch(uri, {
 			...initOptions,
 			headers: {
 				...initOptions?.headers,
-				...await this.getHeaders()
+				...(await this.getHeaders())
 			}
 		});
 
 		const data = await response.json();
+
+		console.log('sub', data);
 		if (response.status !== 200) {
 			return {
 				...(data as GenericErrorResponse),
@@ -131,18 +132,18 @@ export class CredentialServiceBillingSever {
 			};
 		}
 
-		const parsed = GetSubscriptionsResponseSchema.safeParse(data);
-		if (!parsed.success) {
-			return {
-				success: false,
-				status: 406,
-				error: parsed.error.toString()
-			};
-		}
+		// const parsed = GetSubscriptionsResponseSchema.safeParse(data);
+		// if (!parsed.success) {
+		// 	return {
+		// 		success: false,
+		// 		status: 406,
+		// 		error: parsed.error.toString()
+		// 	};
+		// }
 
 		return {
 			success: true,
-			data: parsed.data,
+			data: data as GetSubscriptionsResponse,
 			status: response.status
 		};
 	}
