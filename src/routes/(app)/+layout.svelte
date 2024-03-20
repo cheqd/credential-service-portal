@@ -5,7 +5,8 @@
 	import '../../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import { initializeStores, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
-
+	import { navigating } from '$app/stores';
+	import Loader from '$lib/components/Loader.svelte';
 	initializeStores();
 	const drawerStore = getDrawerStore();
 
@@ -34,5 +35,12 @@
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation closeDrawer={() => {}} />
 	</svelte:fragment>
-	<slot />
+
+	{#if $navigating}
+		<div class="w-full h-full flex items-center justify-center">
+			<Loader />
+		</div>
+	{:else}
+		<slot />
+	{/if}
 </AppShell>
