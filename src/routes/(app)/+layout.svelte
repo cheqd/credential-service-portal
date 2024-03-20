@@ -40,7 +40,6 @@
 		<div class="w-full h-full flex items-center justify-center">
 			<Loader />
 		</div>
-	{:else}
-		<slot />
 	{/if}
+	<slot />
 </AppShell>
