@@ -1,7 +1,13 @@
 import type { CredentialServiceApiResponse, GenericErrorResponse } from './helpers';
 import { env } from '$env/dynamic/private';
 import type { GetProductsListResponse } from '$lib/types/types/product.types';
-import type { GetSubscriptionResponse } from '$lib/types/types/subscription.types';
+import type {
+	CreateSubscriptionRequestBody,
+	CreateSubscriptionResponse,
+	GetSubscriptionResponse,
+	UpdateSubscriptionRequestBody,
+	UpdateSubscriptionResponse
+} from '$lib/types/types/subscription.types';
 import { jwtDecode } from 'jwt-decode';
 
 export type AuthenticationTokenResponse = {
@@ -22,7 +28,8 @@ export class CredentialServiceBillingSever {
 				? this._m2mToken
 				: await this.issueM2MToken();
 		return {
-			Authorization: `Bearer ${m2mToken}`
+			Authorization: `Bearer ${m2mToken}`,
+			'Content-Type': 'application/json'
 		};
 	}
 
@@ -142,6 +149,98 @@ export class CredentialServiceBillingSever {
 		return {
 			success: true,
 			data: data as GetSubscriptionResponse,
+			status: response.status
+		};
+	}
+
+	async createSubscription(
+		createSubscriptionBody: CreateSubscriptionRequestBody,
+		initOptions?: RequestInit
+	): Promise<CredentialServiceApiResponse<CreateSubscriptionResponse, GenericErrorResponse>> {
+		console.log('body here', createSubscriptionBody);
+		// TODO: update return type
+		const uri = new URL(`/admin/subscription/create`, this.apiEndpoint);
+
+		const response = await this.fetch(uri, {
+			...initOptions,
+			headers: {
+				...initOptions?.headers,
+				...(await this.getHeaders())
+			},
+			method: 'POST',
+			body: JSON.stringify(createSubscriptionBody)
+		});
+
+		console.log('headers', initOptions);
+		const data = await response.json();
+
+		console.log('create sub', data);
+		if (response.status !== 200) {
+			return {
+				...(data as GenericErrorResponse),
+				success: false,
+				status: response.status
+			};
+		}
+
+		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
+		// if (!parsed.success) {
+		// 	return {
+		// 		success: false,
+		// 		status: 406,
+		// 		error: parsed.error.toString()
+		// 	};
+		// }
+
+		return {
+			success: true,
+			data: data,
+			status: response.status
+		};
+	}
+
+	async updateSubscription(
+		updateSubscriptionBody: UpdateSubscriptionRequestBody,
+		initOptions?: RequestInit
+	): Promise<CredentialServiceApiResponse<UpdateSubscriptionResponse, GenericErrorResponse>> {
+		console.log('body here', updateSubscriptionBody);
+		// TODO: update return type
+		const uri = new URL(`/admin/subscription/update`, this.apiEndpoint);
+
+		const response = await this.fetch(uri, {
+			...initOptions,
+			headers: {
+				...initOptions?.headers,
+				...(await this.getHeaders())
+			},
+			method: 'POST',
+			body: JSON.stringify(updateSubscriptionBody)
+		});
+
+		console.log('headers', initOptions);
+		const data = await response.json();
+
+		console.log('create sub', data);
+		if (response.status !== 200) {
+			return {
+				...(data as GenericErrorResponse),
+				success: false,
+				status: response.status
+			};
+		}
+
+		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
+		// if (!parsed.success) {
+		// 	return {
+		// 		success: false,
+		// 		status: 406,
+		// 		error: parsed.error.toString()
+		// 	};
+		// }
+
+		return {
+			success: true,
+			data: data,
 			status: response.status
 		};
 	}

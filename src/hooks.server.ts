@@ -3,7 +3,7 @@ import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { LogtoAuthHandler } from '@cntr/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
-import { CredentialServiceBillingSever } from '$lib/api/credentialService';
+import { CredentialServiceBillingSever } from '$lib/api/credentialServiceBilling';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();

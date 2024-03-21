@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { CredentialServiceBillingSever } from '$lib/api/credentialService';
+import type { CredentialServiceBillingSever } from '$lib/api/credentialServiceBilling';
 import type { GetProductsListResponse } from '$lib/types/types/product.types';
 
 // for information about these interfaces
