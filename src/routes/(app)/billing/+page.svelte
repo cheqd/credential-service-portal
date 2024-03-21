@@ -2,7 +2,11 @@
 	import BillingPlanCard from '$lib/components/BillingPlanCard.svelte';
 	import CurrentPlanCard from '$lib/components/CurrentPlanCard.svelte';
 	import type { Product } from '$lib/types/types/product.types.js';
-	import type { Subscription } from '$lib/types/types/subscription.types.js';
+	import type {
+		CreateSubscriptionRequestBody,
+		Subscription,
+		UpdateSubscriptionRequestBody
+	} from '$lib/types/types/subscription.types.js';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -11,28 +15,43 @@
 	let currentSubscription: Subscription | null;
 	let currentPlan: Product;
 
-	export const createSession = async (priceId: string) => {
-		// console.log('clicked');
-		// console.log(data.idToken);
-		// // console.log(event.locals.idToken);
-		// const requestBody = {
-		// 	// Here we need to setup the corresponding price of the product which should be get from CaaS
-		// 	price: priceId,
-		// 	successURL: 'http://localhost:3002/home',
-		// 	cancelURL: 'https://d5ec-79-140-150-148.ngrok-free.app/admin/swagger'
-		// };
-		// const response = await fetch('/api/billing', {
-		// 	method: 'POST',
-		// 	body: JSON.stringify(requestBody),
-		// 	headers: {
-		// 		'content-type': 'application/json',
-		// 		'id-token': `${data.idToken}`
-		// 	}
-		// });
-		// console.log('response', response.status);
-		// // console.log('response data', await response.json());
-		// const res = await response.json();
-		// console.log('res', res);
+	export const createSubscription = async (priceId: string) => {
+		const requestBody = {
+			price: priceId,
+			successURL: 'http://localhost:3002/home',
+			cancelURL: 'http://localhost:3002/home'
+		} as CreateSubscriptionRequestBody;
+		const response = await fetch('/api/billing/subscription/create', {
+			method: 'POST',
+			body: JSON.stringify(requestBody),
+			headers: {
+				'id-token': data.idToken || ''
+			}
+		});
+		console.log('create sub res status', response.status);
+		// console.log('response data', await response.json());
+		const res = await response.json();
+		console.log('create sub response', res);
+		if (res.url) {
+			window.location.href = res.url;
+		}
+	};
+
+	export const updateSubscription = async (priceId: string) => {
+		const requestBody = {
+			returnUrl: 'http://localhost:3002/home'
+		} as UpdateSubscriptionRequestBody;
+		const response = await fetch('/api/billing/subscription/update', {
+			method: 'POST',
+			body: JSON.stringify(requestBody),
+			headers: {
+				'id-token': data.idToken || ''
+			}
+		});
+		console.log('create sub res status', response.status);
+		// console.log('response data', await response.json());
+		const res = await response.json();
+		console.log('create sub response', res);
 		// if (res.url) {
 		// 	window.location.href = res.url;
 		// }
@@ -77,8 +96,8 @@
 							featuresTitle={'Everything in Free trial and'}
 							features={p.features.map((f) => f.name)}
 							isCustom={p.name.toLowerCase() === 'custom'}
-							{createSession}
-							isCurrentPlan={true}
+							createSession={updateSubscription}
+							isCurrentPlan={p.id === currentPlan.id}
 							priceId={p.prices[0].id}
 						/>
 					{/each}
