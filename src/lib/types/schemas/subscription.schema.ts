@@ -11,7 +11,6 @@ export const SubscriptionPlanSchema = z.object({
 
 export const SubscriptionSchema = z.object({
 	id: z.string(),
-	object: z.string(), // this is constant
 	currency: z.string(),
 	customer: z.string(),
 	plan: SubscriptionPlanSchema,

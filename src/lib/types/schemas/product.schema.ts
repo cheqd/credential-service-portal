@@ -7,13 +7,10 @@ export const ProductFeatureSchema = z.object({
 
 export const ProductSchema = z.object({
 	id: z.string(),
-	object: z.enum(['product']), // this might be constant, have a look again
 	active: z.boolean(),
-	attributes: z.array(z.any()), // TODO: check this again
 	description: z.string(),
 	features: z.array(ProductFeatureSchema),
 	name: z.string(),
-
 	prices: z.array(PriceSchema)
 });
 
