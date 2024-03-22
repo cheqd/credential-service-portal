@@ -19,12 +19,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 				};
 			} else if (subscription.status === 404) {
 				return {
-					subscriptionNotFound: true
+					subscriptionNotFound: true,
+					idToken
 				};
 			}
 		}
 
-		return { subscription: null, subscriptionNotFound: false };
+		return { subscription: null, subscriptionNotFound: false, idToken };
 	} catch (error) {
 		console.error('Error occurred while loading page:', error);
 		return { subscription: null, subscriptionNotFound: false };

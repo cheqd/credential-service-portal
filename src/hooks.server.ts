@@ -66,37 +66,8 @@ export const setupClient: Handle = async ({ event, resolve }) => {
 		privEnv.CREDENTIAL_SERVICE_ENDPOINT,
 		event.fetch
 	);
-	if (event.locals.idToken) {
-		console.log('id token exists', event.locals.idToken);
-		await fetchStripeProducts(
-			event.locals,
-			event.locals.credentialServiceBillingApi,
-			event.locals.idToken
-		);
-	}
 
 	return await resolve(event);
-};
-
-export const fetchStripeProducts = async (
-	locals: App.Locals,
-	server: CredentialServiceBillingServer,
-	idToken: string
-) => {
-	console.log('called');
-	if (!locals.stripeProducts) {
-		console.log('no stripe products');
-		const products = await server.listProducts(true, {
-			headers: {
-				'id-token': idToken
-			}
-		});
-		console.log('products fetched', products);
-		if (products.success) {
-			console.log('products fetched success', products.data);
-			locals.stripeProducts = products.data;
-		}
-	}
 };
 
 export const handle = sequence(

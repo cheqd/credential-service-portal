@@ -3,9 +3,11 @@
 	import { createSubscription, updateSubscription } from '$lib/api/subscriptions';
 	import BillingPlanCard from '$lib/components/BillingPlanCard.svelte';
 	import CurrentPlanCard from '$lib/components/CurrentPlanCard.svelte';
-	import type { Product } from '$lib/types/types/product.types.js';
+	import type { GetProductsListResponse, Product } from '$lib/types/types/product.types.js';
 	import type { Subscription } from '$lib/types/types/subscription.types.js';
 	import { env as pubEnv } from '$env/dynamic/public';
+	import { productsStore } from '$lib/stores/productsStore.js';
+	import { CACHED_PRODUCTS_SESSION } from '$lib/client/constants.js';
 
 	export let data;
 
@@ -14,9 +16,24 @@
 	let currentPlan: Product | null = null;
 
 	onMount(async () => {
-		products = data?.products?.products.data ?? [];
-		currentSubscription = data?.subscription ?? null;
+		const cachedProducts = sessionStorage.getItem(CACHED_PRODUCTS_SESSION);
+		if (cachedProducts) {
+			productsStore.set(JSON.parse(cachedProducts) as GetProductsListResponse);
+		} else {
+			const response = await fetch('/api/billing/products', {
+				headers: {
+					'id-token': data.idToken || ''
+				}
+			});
+			const productsData = (await response.json()) as GetProductsListResponse;
+			productsStore.set(productsData);
+			sessionStorage.setItem(CACHED_PRODUCTS_SESSION, JSON.stringify(productsData));
+		}
 
+		if ($productsStore) {
+			products = $productsStore.products.data;
+		}
+		currentSubscription = data?.subscription ?? null;
 		if (currentSubscription) {
 			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
 		}
