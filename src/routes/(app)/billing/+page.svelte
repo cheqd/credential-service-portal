@@ -4,9 +4,13 @@
 	import type { Product } from '$lib/types/types/product.types.js';
 	import type {
 		CreateSubscriptionRequestBody,
+		CreateSubscriptionResponse,
 		Subscription,
-		UpdateSubscriptionRequestBody
+		UpdateSubscriptionRequestBody,
+		UpdateSubscriptionResponse
 	} from '$lib/types/types/subscription.types.js';
+	import { env as pubEnv } from '$env/dynamic/public';
+
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -30,10 +34,10 @@
 		});
 		console.log('create sub res status', response.status);
 		// console.log('response data', await response.json());
-		const res = await response.json();
+		const res = (await response.json()) as CreateSubscriptionResponse;
 		console.log('create sub response', res);
-		if (res.url) {
-			window.location.href = res.url;
+		if (res.clientSecret) {
+			window.location.href = res.clientSecret;
 		}
 	};
 
@@ -50,11 +54,11 @@
 		});
 		console.log('create sub res status', response.status);
 		// console.log('response data', await response.json());
-		const res = await response.json();
-		console.log('create sub response', res);
-		// if (res.url) {
-		// 	window.location.href = res.url;
-		// }
+		const res = (await response.json()) as UpdateSubscriptionResponse;
+		console.log('update sub response', res);
+		if (res.clientSecret) {
+			window.location.href = res.clientSecret;
+		}
 	};
 
 	$: console.log('is loading');
@@ -66,6 +70,9 @@
 		currentPlan = products.filter(
 			(p) => p.id === currentSubscription?.items.data[0].plan.product
 		)[0];
+
+		// TODO: sort products by current plan
+
 		console.log('current plan', currentPlan);
 	});
 </script>
@@ -84,7 +91,7 @@
 			{/if}
 			<div class="flex flex-col">
 				<span class="text-3xl tracking-wide font-semibold">All Plans</span>
-				<p class=" text-tertiary-600">Simple and transparent pricing that grows with you.</p>
+				<p class=" text-tertiary-900">Simple and transparent pricing that grows with you.</p>
 			</div>
 			<div class="no-scrollbar flex overflow-x-scroll space-x-8 p-4 justify-start -mx-8 lg:mx-0">
 				{#if products}
@@ -93,15 +100,30 @@
 							title={p.name}
 							description={p.description}
 							pricing={p.prices[0].unit_amount / 100}
-							featuresTitle={'Everything in Free trial and'}
+							featuresTitle={p.name.toLowerCase() === 'starter'
+								? 'Everything in Free trial and: '
+								: 'Everything in starter and: '}
 							features={p.features.map((f) => f.name)}
 							isCustom={p.name.toLowerCase() === 'custom'}
-							createSession={updateSubscription}
-							isCurrentPlan={p.id === currentPlan.id}
+							createSession={data.subscriptionNotFound ? createSubscription : updateSubscription}
+							isCurrentPlan={p.id === currentPlan.id && !data.subscriptionNotFound}
 							priceId={p.prices[0].id}
 						/>
 					{/each}
 				{/if}
+
+				<!-- we might need an endpoint in credential service that keeps track of users with custom plans, and maybe what features they have opted in  -->
+				<BillingPlanCard
+					title={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_TITLE}
+					description={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_DESCRIPTION}
+					pricing={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_PRICE}
+					featuresTitle={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_FEATURES_TITLE}
+					features={[]}
+					createSession={async () => {}}
+					isCustom={true}
+					priceId={''}
+					isCurrentPlan={false}
+				/>
 			</div>
 		</div>
 	</div>
