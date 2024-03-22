@@ -1,23 +1,24 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { env as privEnv } from '$env/dynamic/private';
 import type { CreateSubscriptionRequestBody } from '$lib/types/types/subscription.types';
 
-/** @type {import('./$types').RequestHandler} */
-export const POST = (async ({ request, locals }) => {
-	console.log('clicked');
+export const POST: RequestHandler = async ({ request, locals }) => {
+	try {
+		const requestBody = (await request.json()) as CreateSubscriptionRequestBody;
 
-	const createRequestBody = (await request.json()) as CreateSubscriptionRequestBody;
-	console.log('req bod', createRequestBody);
-	const createSubscription = await locals.credentialServiceBillingApi.createSubscription(
-		createRequestBody,
-		{
-			headers: { 'id-token': request.headers.get('id-token') || '' }
+		const idToken = request.headers.get('id-token') || '';
+		const createSubscription = await locals.credentialServiceBillingApi.createSubscription(
+			requestBody,
+			{
+				headers: { 'id-token': idToken }
+			}
+		);
+
+		if (!createSubscription.success) {
+			return json(createSubscription, { status: createSubscription.status });
 		}
-	);
-
-	if (!createSubscription.success) {
-		return json(createSubscription, { status: createSubscription.status });
+		return json(createSubscription.data, { status: createSubscription.status });
+	} catch (error) {
+		console.error('Error occurred:', error);
+		return json({ error: 'Internal Server Error' }, { status: 500 });
 	}
-
-	return json(createSubscription.data, { status: createSubscription.status });
-}) satisfies RequestHandler;
+};
