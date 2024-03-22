@@ -7,8 +7,6 @@
 
 	let firstSliceOfFeatures = features.slice(0, features.length / 2);
 	let secondSliceOfFeatures = features.slice(features.length / 2);
-
-	$: console.log('feats', firstSliceOfFeatures, secondSliceOfFeatures, features);
 </script>
 
 <div class="flex flex-col gap-3">

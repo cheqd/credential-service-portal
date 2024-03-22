@@ -37,8 +37,6 @@
 		if (currentSubscription) {
 			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
 		}
-
-		console.log('Current Plan:', currentPlan);
 	});
 
 	async function handleSubscription(priceId: string) {

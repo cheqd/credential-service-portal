@@ -38,8 +38,7 @@ const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
 	try {
 		const user = await event.locals.logto.fetchUserInfo();
 		const idToken = await event.locals.logto.getIdToken();
-		console.log('user', user);
-		console.log('idToken', idToken);
+
 		event.locals.user = user;
 		event.locals.idToken = idToken;
 	} catch (err) {

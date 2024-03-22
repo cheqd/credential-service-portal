@@ -64,7 +64,6 @@ export class CredentialServiceBillingServer {
 		if (response.ok) {
 			const authResponse = await response.json();
 			this._m2mToken = authResponse.access_token;
-			console.log('M2M token issued', authResponse);
 			return authResponse.access_token;
 		}
 
