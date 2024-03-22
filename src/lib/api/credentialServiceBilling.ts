@@ -17,20 +17,24 @@ export type AuthenticationTokenResponse = {
 	scope: string;
 };
 
-export class CredentialServiceBillingSever {
+export class CredentialServiceBillingServer {
 	private readonly apiEndpoint: string;
 	private readonly fetch: typeof fetch;
 	private _m2mToken: string = '';
 
 	private async getHeaders(): Promise<Record<string, string>> {
-		const m2mToken =
-			this._m2mToken && (await this.isM2MNotExpired())
-				? this._m2mToken
-				: await this.issueM2MToken();
+		const m2mToken = await this.getM2MToken();
 		return {
 			Authorization: `Bearer ${m2mToken}`,
 			'Content-Type': 'application/json'
 		};
+	}
+
+	private async getM2MToken(): Promise<string> {
+		if (this._m2mToken && (await this.isM2MNotExpired())) {
+			return this._m2mToken;
+		}
+		return this.issueM2MToken();
 	}
 
 	private async isM2MNotExpired(): Promise<boolean> {
@@ -38,8 +42,7 @@ export class CredentialServiceBillingSever {
 		return expiredAt.exp < Date.now();
 	}
 
-	// this method uses the Management API. It's scope is well beyond the user scope.
-	private issueM2MToken = async (): Promise<string> => {
+	private async issueM2MToken(): Promise<string> {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
 			resource: env.LOGTO_MANAGEMENT_API,
@@ -49,7 +52,6 @@ export class CredentialServiceBillingSever {
 		const uri = new URL('/oidc/token', env.LOGTO_ENDPOINT);
 		const token = `Basic ${btoa(env.LOGTO_M2M_APP_ID + ':' + env.LOGTO_M2M_APP_SECRET)}`;
 
-		// we use global fetch here, SvelteKit fetch throws CORS error
 		const response = await fetch(uri, {
 			method: 'POST',
 			body: searchParams,
@@ -58,190 +60,105 @@ export class CredentialServiceBillingSever {
 				Authorization: token
 			}
 		});
-		const data = await response.json();
-		if (response.status === 200) {
-			const authResponse = data as AuthenticationTokenResponse;
+
+		if (response.ok) {
+			const authResponse = await response.json();
 			this._m2mToken = authResponse.access_token;
 			console.log('M2M token issued', authResponse);
 			return authResponse.access_token;
 		}
 
 		throw new Error('Failed to issue M2M token');
-	};
+	}
 
 	constructor(endpoint: string, fetcher: typeof fetch) {
 		this.apiEndpoint = endpoint;
 		this.fetch = fetcher;
 	}
 
-	async listProducts(
-		prices: boolean = true,
-		initOptions?: RequestInit
-	): Promise<CredentialServiceApiResponse<GetProductsListResponse, GenericErrorResponse>> {
-		const uri = new URL(`/admin/product/list?prices=${prices}`, this.apiEndpoint);
-
-		const response = await this.fetch(uri, {
-			...initOptions,
-			headers: {
-				...initOptions?.headers,
-				...(await this.getHeaders())
-			}
-		});
-
+	private async handleApiResponse<T>(
+		response: Response
+	): Promise<CredentialServiceApiResponse<T, GenericErrorResponse>> {
 		const data = await response.json();
-		if (response.status !== 200) {
+		if (!response.ok) {
 			return {
 				...(data as GenericErrorResponse),
 				success: false,
 				status: response.status
 			};
 		}
-
-		// const parsed = GetProductsListResponseSchema.safeParse(data);
-		// if (!parsed.success) {
-		// 	return {
-		// 		success: false,
-		// 		status: 406,
-		// 		error: parsed.error.toString()
-		// 	};
-		// }
-
+		// TODO: schema validation when BE returns values needed by FE
 		return {
 			success: true,
-			data: data as GetProductsListResponse,
+			data: data as T,
 			status: response.status
 		};
+	}
+
+	async listProducts(
+		prices: boolean = true,
+		initOptions?: RequestInit
+	): Promise<CredentialServiceApiResponse<GetProductsListResponse, GenericErrorResponse>> {
+		try {
+			const uri = new URL(`/admin/product/list?prices=${prices}`, this.apiEndpoint);
+			const response = await this.fetch(uri, {
+				...initOptions,
+				headers: { ...(initOptions?.headers || {}), ...(await this.getHeaders()) }
+			});
+			return this.handleApiResponse<GetProductsListResponse>(response);
+		} catch (error) {
+			return { success: false, status: 500, error: (error as Error).message };
+		}
 	}
 
 	async getCurrentSubscription(
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<GetSubscriptionResponse, GenericErrorResponse>> {
-		const uri = new URL(`/admin/subscription/get`, this.apiEndpoint);
-
-		const response = await this.fetch(uri, {
-			...initOptions,
-			headers: {
-				...initOptions?.headers,
-				...(await this.getHeaders())
-			}
-		});
-
-		const data = await response.json();
-
-		console.log('sub', data);
-		if (response.status !== 200) {
-			return {
-				...(data as GenericErrorResponse),
-				success: false,
-				status: response.status
-			};
+		try {
+			const uri = new URL(`/admin/subscription/get`, this.apiEndpoint);
+			const response = await this.fetch(uri, {
+				...initOptions,
+				headers: { ...(initOptions?.headers || {}), ...(await this.getHeaders()) }
+			});
+			return this.handleApiResponse<GetSubscriptionResponse>(response);
+		} catch (error) {
+			return { success: false, status: 500, error: (error as Error).message };
 		}
-
-		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
-		// if (!parsed.success) {
-		// 	return {
-		// 		success: false,
-		// 		status: 406,
-		// 		error: parsed.error.toString()
-		// 	};
-		// }
-
-		return {
-			success: true,
-			data: data as GetSubscriptionResponse,
-			status: response.status
-		};
 	}
 
 	async createSubscription(
 		createSubscriptionBody: CreateSubscriptionRequestBody,
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<CreateSubscriptionResponse, GenericErrorResponse>> {
-		console.log('body here', createSubscriptionBody);
-		// TODO: update return type
-		const uri = new URL(`/admin/subscription/create`, this.apiEndpoint);
-
-		const response = await this.fetch(uri, {
-			...initOptions,
-			headers: {
-				...initOptions?.headers,
-				...(await this.getHeaders())
-			},
-			method: 'POST',
-			body: JSON.stringify(createSubscriptionBody)
-		});
-
-		console.log('headers', initOptions);
-		const data = await response.json();
-
-		console.log('create sub', data);
-		if (response.status !== 200) {
-			return {
-				...(data as GenericErrorResponse),
-				success: false,
-				status: response.status
-			};
+		try {
+			const uri = new URL(`/admin/subscription/create`, this.apiEndpoint);
+			const response = await this.fetch(uri, {
+				...initOptions,
+				method: 'POST',
+				headers: { ...(initOptions?.headers || {}), ...(await this.getHeaders()) },
+				body: JSON.stringify(createSubscriptionBody)
+			});
+			return this.handleApiResponse<CreateSubscriptionResponse>(response);
+		} catch (error) {
+			return { success: false, status: 500, error: (error as Error).message };
 		}
-
-		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
-		// if (!parsed.success) {
-		// 	return {
-		// 		success: false,
-		// 		status: 406,
-		// 		error: parsed.error.toString()
-		// 	};
-		// }
-
-		return {
-			success: true,
-			data: data,
-			status: response.status
-		};
 	}
 
 	async updateSubscription(
 		updateSubscriptionBody: UpdateSubscriptionRequestBody,
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<UpdateSubscriptionResponse, GenericErrorResponse>> {
-		console.log('body here', updateSubscriptionBody);
-		// TODO: update return type
-		const uri = new URL(`/admin/subscription/update`, this.apiEndpoint);
-
-		const response = await this.fetch(uri, {
-			...initOptions,
-			headers: {
-				...initOptions?.headers,
-				...(await this.getHeaders())
-			},
-			method: 'POST',
-			body: JSON.stringify(updateSubscriptionBody)
-		});
-
-		console.log('headers', initOptions);
-		const data = await response.json();
-
-		console.log('create sub', data);
-		if (response.status !== 200) {
-			return {
-				...(data as GenericErrorResponse),
-				success: false,
-				status: response.status
-			};
+		try {
+			const uri = new URL(`/admin/subscription/update`, this.apiEndpoint);
+			const response = await this.fetch(uri, {
+				...initOptions,
+				method: 'POST',
+				headers: { ...(initOptions?.headers || {}), ...(await this.getHeaders()) },
+				body: JSON.stringify(updateSubscriptionBody)
+			});
+			return this.handleApiResponse<UpdateSubscriptionResponse>(response);
+		} catch (error) {
+			return { success: false, status: 500, error: (error as Error).message };
 		}
-
-		// const parsed = GetSubscriptionResponseSchema.safeParse(data);
-		// if (!parsed.success) {
-		// 	return {
-		// 		success: false,
-		// 		status: 406,
-		// 		error: parsed.error.toString()
-		// 	};
-		// }
-
-		return {
-			success: true,
-			data: data,
-			status: response.status
-		};
 	}
 }
