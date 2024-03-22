@@ -3,9 +3,7 @@
 
 	export let title: string = '';
 	export let description: string = '';
-	export let featuresTitle: string = '';
 	export let features: string[] = [];
-	export let isCustom: boolean = false;
 
 	let firstSliceOfFeatures = features.slice(0, features.length / 2);
 	let secondSliceOfFeatures = features.slice(features.length / 2);
@@ -18,8 +16,7 @@
 	<div class=" rounded-lg border border-tertiary-300 p-6 flex flex-col gap-5 animated-bg">
 		<span class="text-4xl text-primary-500/80 tracking-wide font-semibold">My Plan: {title}</span>
 		<p class="text-tertiary-900">
-			Try our features for free with a 14-day trial on our testing environment and assess whether
-			they meet your requirements.
+			{description}
 		</p>
 		<div class="flex flex-col lg:gap-2">
 			<div class="flex flex-col lg:grid grid-cols-4 gap-3 lg:space-x-6 text-tertiary-900">
