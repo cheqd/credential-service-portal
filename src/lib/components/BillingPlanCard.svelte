@@ -9,12 +9,23 @@
 	export let isCustom: boolean = false;
 	export let isCurrentPlan: boolean = false;
 	export let priceId: string;
+	export let currency: string = 'gbp'; // we defaulting to gbp
 	import { env as pubEnv } from '$env/dynamic/public';
+	import getSymbolFromCurrency from 'currency-symbol-map';
+	import { onMount } from 'svelte';
 
 	export let createSession: (priceId: string) => Promise<void>;
 	let isLoading = false;
 	$: console.log('isCurrent', isCurrentPlan, title);
 	const styling = `flex-shrink-0 w-72 lg:w-80 rounded  ${isCurrentPlan ? ' border-[0.5px] bg-gray-100/25 border-primary-400 ' : ' bg-[#e8ebf4] hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white'}   shadow-lg  flex flex-col gap-3 p-6 items-start`;
+
+	let currencySymbol: string;
+	onMount(() => {
+		currencySymbol = getSymbolFromCurrency(currency) || '';
+		if (!currency) {
+			console.error(`Currency symbol not found for currency code: ${currency}`);
+		}
+	});
 </script>
 
 <div class={styling}>
@@ -27,7 +38,7 @@
 		{:else}
 			<span>from</span>
 
-			<span class="text-4xl font-bold">${pricing}</span>
+			<span class="text-4xl font-bold">{currencySymbol}{pricing}</span>
 
 			<span>/</span>
 			<span>mo</span>

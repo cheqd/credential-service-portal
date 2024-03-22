@@ -108,11 +108,12 @@
 							createSession={data.subscriptionNotFound ? createSubscription : updateSubscription}
 							isCurrentPlan={p.id === currentPlan.id && !data.subscriptionNotFound}
 							priceId={p.prices[0].id}
+							currency={p.prices[0].currency}
 						/>
 					{/each}
 				{/if}
 
-				<!-- we might need an endpoint in credential service that keeps track of users with custom plans, and maybe what features they have opted in  -->
+				<!--TODO: We may require a user tracking endpoint in the credential service to manage users with custom plans and their selected features.  -->
 				<BillingPlanCard
 					title={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_TITLE}
 					description={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_DESCRIPTION}

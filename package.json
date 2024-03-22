@@ -65,6 +65,7 @@
 		"@typescript-eslint/parser": "^6.21.0",
 		"autoprefixer": "^10.4.17",
 		"conventional-changelog-conventionalcommits": "^7.0.2",
+		"currency-symbol-map": "^5.1.0",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
