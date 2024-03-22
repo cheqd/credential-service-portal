@@ -3,7 +3,7 @@ import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { LogtoAuthHandler } from '@cntr/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
-import { CredentialServiceBillingSever } from '$lib/api/credentialServiceBilling';
+import { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
@@ -62,7 +62,7 @@ const wrapLogtoAuthHandler = () => {
 };
 
 export const setupClient: Handle = async ({ event, resolve }) => {
-	event.locals.credentialServiceBillingApi = new CredentialServiceBillingSever(
+	event.locals.credentialServiceBillingApi = new CredentialServiceBillingServer(
 		privEnv.CREDENTIAL_SERVICE_ENDPOINT,
 		event.fetch
 	);
@@ -80,7 +80,7 @@ export const setupClient: Handle = async ({ event, resolve }) => {
 
 export const fetchStripeProducts = async (
 	locals: App.Locals,
-	server: CredentialServiceBillingSever,
+	server: CredentialServiceBillingServer,
 	idToken: string
 ) => {
 	console.log('called');

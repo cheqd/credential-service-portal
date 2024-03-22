@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 
-import type { CredentialServiceBillingSever } from '$lib/api/credentialServiceBilling';
+import type { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
 import type { GetProductsListResponse } from '$lib/types/types/product.types';
 
 // for information about these interfaces
@@ -12,7 +12,7 @@ declare global {
 			user: UserInfoResponse | null;
 			idToken: string | null;
 			callbackErr?: unknown;
-			credentialServiceBillingApi: CredentialServiceBillingSever;
+			credentialServiceBillingApi: CredentialServiceBillingServer;
 			stripeProducts: GetProductsListResponse | null;
 		}
 		// interface PageData {}
