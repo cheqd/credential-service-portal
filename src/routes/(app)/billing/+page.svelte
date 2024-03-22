@@ -10,7 +10,7 @@
 	export let data;
 
 	let products: Product[] = [];
-	let currentSubscription: Subscription = null;
+	let currentSubscription: Subscription | null = null;
 	let currentPlan: Product | null = null;
 
 	onMount(async () => {
@@ -18,8 +18,7 @@
 		currentSubscription = data?.subscription ?? null;
 
 		if (currentSubscription) {
-			currentPlan =
-				products.find((p) => p.id === currentSubscription?.items.data[0]?.plan.product) || null;
+			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
 		}
 
 		console.log('Current Plan:', currentPlan);

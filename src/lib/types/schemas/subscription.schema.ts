@@ -18,9 +18,7 @@ export const SubscriptionSchema = z.object({
 });
 
 export const GetSubscriptionResponseSchema = z.object({
-	subscription: z.object({
-		data: z.array(SubscriptionSchema)
-	})
+	subscription: SubscriptionSchema
 });
 
 export const CreateSubscriptionRequestBodySchema = z.object({
