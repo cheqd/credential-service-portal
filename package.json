@@ -41,7 +41,6 @@
 	},
 	"dependencies": {
 		"clsx": "^2.1.0",
-		"cors": "^2.8.5",
 		"jwt-decode": "^4.0.0",
 		"tailwind-merge": "^2.2.1"
 	},
