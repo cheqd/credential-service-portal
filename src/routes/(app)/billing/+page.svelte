@@ -26,8 +26,10 @@
 				}
 			});
 			const productsData = (await response.json()) as GetProductsListResponse;
-			productsStore.set(productsData);
-			sessionStorage.setItem(CACHED_PRODUCTS_SESSION, JSON.stringify(productsData));
+			if (response.status === 200) {
+				productsStore.set(productsData);
+				sessionStorage.setItem(CACHED_PRODUCTS_SESSION, JSON.stringify(productsData));
+			}
 		}
 
 		if ($productsStore) {
