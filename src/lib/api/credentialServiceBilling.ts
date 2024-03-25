@@ -1,5 +1,6 @@
 import type { CredentialServiceApiResponse, GenericErrorResponse } from './helpers';
 import { env } from '$env/dynamic/private';
+import { env as pubEnv } from '$env/dynamic/public';
 import type { GetProductsListResponse } from '$lib/types/types/product.types';
 import type {
 	CreateSubscriptionRequestBody,
@@ -9,14 +10,6 @@ import type {
 	UpdateSubscriptionResponse
 } from '$lib/types/types/subscription.types';
 import { jwtDecode } from 'jwt-decode';
-
-export type AuthenticationTokenResponse = {
-	access_token: string;
-	expires_in: number;
-	token_type: string;
-	scope: string;
-};
-
 export class CredentialServiceBillingServer {
 	private readonly apiEndpoint: string;
 	private readonly fetch: typeof fetch;
@@ -25,7 +18,7 @@ export class CredentialServiceBillingServer {
 	private async getHeaders(): Promise<Record<string, string>> {
 		const m2mToken = await this.getM2MToken();
 		return {
-			Authorization: `Bearer ${m2mToken}`,
+			// Authorization: `Bearer ${m2mToken}`,
 			'Content-Type': 'application/json'
 		};
 	}
@@ -46,7 +39,10 @@ export class CredentialServiceBillingServer {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
 			resource: env.LOGTO_ADMIN_RESOURCE,
-			scope: 'admin:subscription:create:testnet admin:subscription:get:testnet admin:subscription:update:testnet admin:product:list:testnet admin:subscription:list:testnet'
+			scope:
+				pubEnv.PUBLIC_NODE_ENV === 'production'
+					? 'admin:subscription:create:mainnet admin:subscription:get:mainnet admin:subscription:update:mainnet admin:product:list:mainnet admin:subscription:list:mainnet'
+					: 'admin:subscription:create:testnet admin:subscription:get:testnet admin:subscription:update:testnet admin:product:list:testnet admin:subscription:list:testnet'
 		});
 
 		const uri = new URL('/oidc/token', env.LOGTO_ENDPOINT);

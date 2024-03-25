@@ -1,7 +1,14 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import type { UpdateSubscriptionRequestBody } from '$lib/types/types/subscription.types';
+import { isAuthorized } from '$lib/api/helpers';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
+	console.log('locals', locals.rbac);
+	if (
+		!isAuthorized(locals, 'admin:subscription:update:mainnet', 'admin:subscription:update:testnet')
+	) {
+		return json({ error: 'User is not authorized to update subscription ' }, { status: 403 });
+	}
 	try {
 		const updateRequestBody = (await request.json()) as UpdateSubscriptionRequestBody;
 

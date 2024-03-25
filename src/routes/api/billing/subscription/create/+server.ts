@@ -1,11 +1,19 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import type { CreateSubscriptionRequestBody } from '$lib/types/types/subscription.types';
+import { isAuthorized } from '$lib/api/helpers';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
+	if (
+		!isAuthorized(locals, 'admin:subscription:create:mainnet', 'admin:subscription:create:testnet')
+	) {
+		return json({ error: 'User is not authorized to create subscription ' }, { status: 403 });
+	}
+
 	try {
 		const requestBody = (await request.json()) as CreateSubscriptionRequestBody;
 
 		const idToken = request.headers.get('id-token') || '';
+
 		const createSubscription = await locals.credentialServiceBillingApi.createSubscription(
 			requestBody,
 			{

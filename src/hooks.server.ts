@@ -1,9 +1,15 @@
 import { redirect } from '@sveltejs/kit';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
-import { LogtoAuthHandler } from '@cntr/sveltekit';
+import { LogtoAuthHandler, UserScope } from '@cntr/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
 import { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
+import { CaaSUserLogtoRole, type CredentialServiceApiResponse } from '$lib/api/helpers';
+import type {
+	AuthenticationTokenResponse,
+	LogtoApiError,
+	LogtoRoleScopesList
+} from '$lib/types/types/logto.types';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
@@ -19,6 +25,7 @@ const authenticationHandler: Handle = async ({ event, resolve }) => {
 		case '/':
 			break;
 		case '/logto/callback':
+			console.log('here');
 			if (authenticated) {
 				throw redirect(301, '/home');
 			}
@@ -50,11 +57,14 @@ const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
 };
 
 const wrapLogtoAuthHandler = () => {
+	const scopes = [UserScope.Email, UserScope.Profile, UserScope.CustomData, UserScope.Identities];
+	const resources = [privEnv.LOGTO_MANAGEMENT_API, privEnv.LOGTO_MANAGEMENT_API + '/admin'];
+
 	return LogtoAuthHandler(
 		privEnv.LOGTO_APP_ID,
 		privEnv.LOGTO_ENDPOINT,
-		[],
-		[],
+		scopes,
+		resources,
 		'/logto/callback',
 		logtoCallbackHander
 	);
@@ -69,9 +79,69 @@ export const setupClient: Handle = async ({ event, resolve }) => {
 	return await resolve(event);
 };
 
+const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
+	const { url, locals } = event;
+
+	const ok = url.pathname.startsWith('/api');
+	if (ok) {
+		const searchParams = new URLSearchParams({
+			grant_type: 'client_credentials',
+			resource: privEnv.LOGTO_MANAGEMENT_API,
+			scope: 'all'
+		});
+
+		const uri = new URL('/oidc/token', privEnv.LOGTO_ENDPOINT);
+		const token = `Basic ${btoa(privEnv.LOGTO_M2M_APP_ID + ':' + privEnv.LOGTO_M2M_APP_SECRET)}`;
+
+		const response = await fetch(uri, {
+			method: 'POST',
+			body: searchParams,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: token
+			}
+		});
+
+		console.log('token respnse', response.status);
+
+		if (response.status === 200) {
+			const authResponse = (await response.json()) as AuthenticationTokenResponse;
+			console.log('auth response', authResponse);
+			locals.logto.authTokenResponse = authResponse;
+		}
+	}
+
+	return await resolve(event);
+};
+
+const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope') {
+		const response = await getLogtoRoleScopes(event.fetch);
+		console.log('logto scope', response.status);
+		if (response.success) {
+			event.locals.rbac = {
+				scopes: response.data
+			};
+		}
+	}
+
+	return await resolve(event);
+};
+
+const getLogtoRoleScopes = async (fetcher: typeof fetch) => {
+	const response = await fetcher(`/api/logto/scope?roleId=${CaaSUserLogtoRole.PortalOwner}`);
+	const data = (await response.json()) as CredentialServiceApiResponse<
+		LogtoRoleScopesList,
+		LogtoApiError
+	>;
+	return data;
+};
+
 export const handle = sequence(
+	setupClient,
 	wrapLogtoAuthHandler(),
 	setLogtoAuthenticatedUser,
+	setLogtoAuthTokenForM2M,
 	authenticationHandler,
-	setupClient
+	setLogtoRBACScopes
 );

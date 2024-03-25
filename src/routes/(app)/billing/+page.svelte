@@ -20,7 +20,6 @@
 		if (cachedProducts) {
 			productsStore.set(JSON.parse(cachedProducts) as GetProductsListResponse);
 		} else {
-			console.log('id token', data.idToken);
 			const response = await fetch('/api/billing/products', {
 				headers: {
 					'id-token': data.idToken || ''
