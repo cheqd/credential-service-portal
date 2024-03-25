@@ -57,7 +57,7 @@ export async function updateSubscription(
 ): Promise<CredentialServiceApiResponse<UpdateSubscriptionResponse, GenericErrorResponse>> {
 	try {
 		const requestBody = {
-			returnUrl: env.PUBLIC_STRIPE_UPDATE_SUBSCRIPTION_RETURN_URL
+			returnURL: env.PUBLIC_STRIPE_UPDATE_SUBSCRIPTION_RETURN_URL
 		} satisfies UpdateSubscriptionRequestBody;
 
 		const response = await fetch('/api/billing/subscription/update', {

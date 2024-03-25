@@ -14,7 +14,8 @@ export const SubscriptionSchema = z.object({
 	currency: z.string(),
 	customer: z.string(),
 	plan: SubscriptionPlanSchema,
-	quantity: z.number()
+	quantity: z.number(),
+	trial_end: z.number().optional()
 });
 
 export const GetSubscriptionResponseSchema = z.object({
@@ -30,12 +31,11 @@ export const CreateSubscriptionRequestBodySchema = z.object({
 });
 
 export const UpdateSubscriptionRequestBodySchema = z.object({
-	returnUrl: z.string()
+	returnURL: z.string()
 });
 
 const StripeSubscriptionResponseSchema = z.object({
-	sessionURL
-	: z.string()
+	sessionURL: z.string()
 });
 
 export const UpdateSubscriptionResponseSchema = StripeSubscriptionResponseSchema;
