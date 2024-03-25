@@ -45,12 +45,12 @@
 			if (data.subscriptionNotFound) {
 				const createSub = await createSubscription(priceId, idToken);
 				if (createSub.success) {
-					window.location.href = createSub.data.clientSecret;
+					window.location.href = createSub.data.sessionURL;
 				}
 			} else {
 				const updateSub = await updateSubscription(idToken);
 				if (updateSub.success) {
-					window.location.href = updateSub.data.clientSecret;
+					window.location.href = updateSub.data.sessionURL;
 				}
 			}
 		} catch (error) {

@@ -33,7 +33,7 @@ export const UpdateSubscriptionRequestBodySchema = z.object({
 });
 
 const StripeSubscriptionResponseSchema = z.object({
-	clientSecret: z.string()
+	sessionURL: z.string()
 });
 
 export const UpdateSubscriptionResponseSchema = StripeSubscriptionResponseSchema;
