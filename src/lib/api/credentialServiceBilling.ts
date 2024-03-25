@@ -45,8 +45,8 @@ export class CredentialServiceBillingServer {
 	private async issueM2MToken(): Promise<string> {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
-			resource: env.LOGTO_MANAGEMENT_API,
-			scope: 'all'
+			resource: env.LOGTO_ADMIN_RESOURCE,
+			scope: 'admin:subscription:create:testnet admin:subscription:get:testnet admin:subscription:update:testnet admin:product:list:testnet admin:subscription:list:testnet'
 		});
 
 		const uri = new URL('/oidc/token', env.LOGTO_ENDPOINT);

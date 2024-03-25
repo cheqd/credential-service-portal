@@ -25,7 +25,8 @@ export const CreateSubscriptionRequestBodySchema = z.object({
 	price: z.string(),
 	successURL: z.string(),
 	cancelURL: z.string(),
-	idempotencyKey: z.string().optional()
+	idempotencyKey: z.string().optional(),
+	trialPeriodDays: z.number().optional()
 });
 
 export const UpdateSubscriptionRequestBodySchema = z.object({
@@ -33,7 +34,8 @@ export const UpdateSubscriptionRequestBodySchema = z.object({
 });
 
 const StripeSubscriptionResponseSchema = z.object({
-	sessionURL: z.string()
+	sessionURL
+	: z.string()
 });
 
 export const UpdateSubscriptionResponseSchema = StripeSubscriptionResponseSchema;

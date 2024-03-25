@@ -17,7 +17,8 @@ export async function createSubscription(
 		const requestBody = {
 			price: priceId,
 			successURL: env.PUBLIC_STRIPE_CREATE_SUBSCRIPTION_SUCCESS_URL,
-			cancelURL: env.PUBLIC_STRIPE_CREATE_SUBSCRIPTION_CANCEL_URL
+			cancelURL: env.PUBLIC_STRIPE_CREATE_SUBSCRIPTION_CANCEL_URL,
+			trialPeriodDays: 14
 		} satisfies CreateSubscriptionRequestBody;
 
 		const response = await fetch('/api/billing/subscription/create', {
