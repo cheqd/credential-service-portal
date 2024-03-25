@@ -20,6 +20,7 @@
 		if (cachedProducts) {
 			productsStore.set(JSON.parse(cachedProducts) as GetProductsListResponse);
 		} else {
+			console.log('id token', data.idToken);
 			const response = await fetch('/api/billing/products', {
 				headers: {
 					'id-token': data.idToken || ''
@@ -63,7 +64,7 @@
 
 <div class="h-full w-full flex flex-col gap-9">
 	<div class="flex flex-col gap-24 p-9">
-		{#if currentPlan}
+		{#if currentPlan && !data.subscriptionNotFound}
 			<CurrentPlanCard
 				features={currentPlan.features.map((f) => f.name)}
 				description={currentPlan.description}
@@ -89,6 +90,7 @@
 					isCurrentPlan={product.id === currentPlan?.id && !data.subscriptionNotFound}
 					priceId={product.prices[0].id}
 					currency={product.prices[0].currency}
+					subscriptionNotFound={data.subscriptionNotFound}
 				/>
 			{/each}
 
@@ -102,6 +104,7 @@
 				isCustom={true}
 				priceId={''}
 				isCurrentPlan={false}
+				subscriptionNotFound={data.subscriptionNotFound}
 			/>
 		</div>
 	</div>

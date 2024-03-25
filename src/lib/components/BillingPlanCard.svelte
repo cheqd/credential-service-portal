@@ -1,6 +1,10 @@
 <script lang="ts">
 	import LoaderIcon from '$lib/icons/LoaderIcon.svelte';
 	import CheckIcon from '$lib/icons/checkIcon.svelte';
+	import { env as pubEnv } from '$env/dynamic/public';
+	import getSymbolFromCurrency from 'currency-symbol-map';
+	import { onMount } from 'svelte';
+
 	export let title: string;
 	export let description: string;
 	export let pricing: number | string;
@@ -10,9 +14,7 @@
 	export let isCurrentPlan: boolean = false;
 	export let priceId: string;
 	export let currency: string = 'gbp'; // we defaulting to gbp
-	import { env as pubEnv } from '$env/dynamic/public';
-	import getSymbolFromCurrency from 'currency-symbol-map';
-	import { onMount } from 'svelte';
+	export let subscriptionNotFound: boolean;
 
 	export let createSession: (priceId: string) => Promise<void>;
 	let isLoading = false;
@@ -56,7 +58,11 @@
 		}}
 		disabled={isCurrentPlan || isLoading}
 	>
-		{isCurrentPlan ? `Current Plan: ${title}` : `Switch to ${title} now`}
+		{isCurrentPlan
+			? `Current Plan: ${title}`
+			: subscriptionNotFound
+				? `Start ${title} now`
+				: `Switch to ${title} now`}
 		{#if isLoading}
 			<LoaderIcon class="ml-2 h-5 w-5" />
 		{/if}
