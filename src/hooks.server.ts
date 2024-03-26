@@ -3,9 +3,14 @@ import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { LogtoAuthHandler, UserScope } from '@cntr/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
+import { env as pubEnv } from '$env/dynamic/public';
 import { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
 import { CaaSUserLogtoRole, type CredentialServiceApiResponse } from '$lib/api/helpers';
-import type { LogtoApiError, LogtoRoleScopesList } from '$lib/types/types/logto.types';
+import type {
+	AuthenticationTokenResponse,
+	LogtoApiError,
+	LogtoRoleScopesList
+} from '$lib/types/types/logto.types';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
@@ -41,6 +46,44 @@ export const logtoCallbackHandler = async (event: RequestEvent) => {
 		console.error('error in handleSignInCallback: ', event.locals.callbackErr);
 		throw redirect(303, '/');
 	}
+};
+
+const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
+	const { url, locals } = event;
+
+	const ok = url.pathname.startsWith('/api');
+	if (ok) {
+		const searchParams = new URLSearchParams({
+			grant_type: 'client_credentials',
+			resource: privEnv.LOGTO_DEFAULT_RESOURCE_URL + '/admin',
+			scope:
+				pubEnv.PUBLIC_NODE_ENV === 'production'
+					? 'admin:subscription:create:mainnet admin:subscription:get:mainnet admin:subscription:update:mainnet admin:product:list:mainnet admin:subscription:list:mainnet'
+					: 'admin:subscription:create:testnet admin:subscription:get:testnet admin:subscription:update:testnet admin:product:list:testnet admin:subscription:list:testnet'
+		});
+
+		const uri = new URL('/oidc/token', privEnv.LOGTO_ENDPOINT);
+		const token = `Basic ${btoa(privEnv.LOGTO_M2M_APP_ID + ':' + privEnv.LOGTO_M2M_APP_SECRET)}`;
+
+		const response = await fetch(uri, {
+			method: 'POST',
+			body: searchParams,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				Authorization: token
+			}
+		});
+
+		console.log('token respnse', response.status);
+
+		if (response.status === 200) {
+			const authResponse = (await response.json()) as AuthenticationTokenResponse;
+			console.log('auth response', authResponse);
+			locals.logto.authTokenResponse = authResponse;
+		}
+	}
+
+	return await resolve(event);
 };
 
 const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
@@ -88,7 +131,10 @@ const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
 	console.log('at setLogtoRBACScopes: ');
 	console.log('event.url', event.url.pathname);
 
-	if (event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope') {
+	if (
+		event.url.pathname === '/billing' ||
+		(event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope')
+	) {
 		// console.log('event.url', event.url);
 		const response = await getLogtoRoleScopes(event.fetch);
 		console.log('logto scope', response.status);
@@ -114,7 +160,8 @@ const getLogtoRoleScopes = async (fetcher: typeof fetch) => {
 export const handle = sequence(
 	setupClient,
 	wrapLogtoAuthHandler(),
+	setLogtoAuthenticatedUser,
+	setLogtoAuthTokenForM2M,
 	setLogtoRBACScopes,
-	authenticationHandler,
-	setLogtoAuthenticatedUser
+	authenticationHandler
 );
