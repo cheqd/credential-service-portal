@@ -25,7 +25,6 @@ const authenticationHandler: Handle = async ({ event, resolve }) => {
 		case '/':
 			break;
 		case '/logto/callback':
-			console.log('here');
 			if (authenticated) {
 				throw redirect(301, '/home');
 			}
@@ -58,7 +57,7 @@ const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
 
 const wrapLogtoAuthHandler = () => {
 	const scopes = [UserScope.Email, UserScope.Profile, UserScope.CustomData, UserScope.Identities];
-	const resources = [privEnv.LOGTO_MANAGEMENT_API, privEnv.LOGTO_MANAGEMENT_API + '/admin'];
+	const resources = [privEnv.LOGTO_MANAGEMENT_API, privEnv.LOGTO_DEFAULT_RESOURCE_URL + '/admin'];
 
 	return LogtoAuthHandler(
 		privEnv.LOGTO_APP_ID,
@@ -86,7 +85,7 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 	if (ok) {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
-			resource: privEnv.LOGTO_MANAGEMENT_API,
+			resource: privEnv.LOGTO_DEFAULT_RESOURCE_URL + '/admin',
 			scope: 'all'
 		});
 
@@ -115,7 +114,9 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 };
 
 const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
+	console.log('event.url', event.url);
 	if (event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope') {
+		console.log('event.url', event.url);
 		const response = await getLogtoRoleScopes(event.fetch);
 		console.log('logto scope', response.status);
 		if (response.success) {
