@@ -79,6 +79,7 @@
 				features={currentPlan.features.map((f) => f.name)}
 				description={currentPlan.description}
 				title={currentPlan.name}
+				trialDaysLeft={trialEndsIn}
 			/>
 		{/if}
 		<div class="flex flex-col">
