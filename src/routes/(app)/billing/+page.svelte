@@ -8,12 +8,16 @@
 	import { env as pubEnv } from '$env/dynamic/public';
 	import { productsStore } from '$lib/stores/productsStore.js';
 	import { CACHED_PRODUCTS_SESSION } from '$lib/client/constants.js';
+	import { getDaysLeft } from '$lib/client/helpers.js';
 
 	export let data;
 
 	let products: Product[] = [];
 	let currentSubscription: Subscription | null = null;
 	let currentPlan: Product | null = null;
+	let trialEndsIn: number | null = null;
+
+	$: console.log('subs not found', data.subscriptionNotFound);
 
 	onMount(async () => {
 		const cachedProducts = sessionStorage.getItem(CACHED_PRODUCTS_SESSION);
@@ -36,8 +40,13 @@
 			products = $productsStore.products.data;
 		}
 		currentSubscription = data?.subscription ?? null;
+
 		if (currentSubscription) {
 			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
+
+			if (currentSubscription.trial_end) {
+				trialEndsIn = getDaysLeft(currentSubscription.trial_end);
+			}
 		}
 	});
 
@@ -59,6 +68,8 @@
 			console.error('Subscription error:', error);
 		}
 	}
+
+	$: console.log('trial ends in ', trialEndsIn);
 </script>
 
 <div class="h-full w-full flex flex-col gap-9">

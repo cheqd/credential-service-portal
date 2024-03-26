@@ -23,12 +23,13 @@ export const GET: RequestHandler = async ({ locals, url, fetch }) => {
 		};
 		return json(resp, { status: 401 });
 	}
-
+	console.log('tokent at /scope', authToken.access_token);
 	try {
 		console.log('search params', url.searchParams.get('roleId'));
 		const roleId = parseCaaSUserLogtoRole(url.searchParams.get('roleId') ?? '');
 		console.log('role id', roleId);
 		const uri = new URL(`/api/roles/${LogtoRolesMap.get(roleId)}/scopes`, env.LOGTO_ENDPOINT);
+		console.log('uri', uri);
 		const response = await fetch(uri, {
 			headers: {
 				Authorization: `Bearer ${authToken.access_token}`

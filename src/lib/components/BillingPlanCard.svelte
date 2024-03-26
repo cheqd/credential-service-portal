@@ -61,7 +61,7 @@
 		{isCurrentPlan
 			? `Current Plan: ${title}`
 			: subscriptionNotFound
-				? `Start ${title} now`
+				? `Begin with ${title} now`
 				: `Switch to ${title} now`}
 		{#if isLoading}
 			<LoaderIcon class="ml-2 h-5 w-5" />
