@@ -3,9 +3,9 @@ import { isAuthorized } from '$lib/api/helpers';
 
 export const GET: RequestHandler = async ({ request, locals }) => {
 	console.log('locals.rback at products', locals.rbac);
-	if (!isAuthorized(locals, 'admin:product:list:mainnet', 'admin:product:list:testnet')) {
-		return json({ error: 'User is not authorized to list strip products' }, { status: 403 });
-	}
+	// if (!isAuthorized(locals, 'admin:product:list:mainnet', 'admin:product:list:testnet')) {
+	// 	return json({ error: 'User is not authorized to list strip products' }, { status: 403 });
+	// }
 	try {
 		const idToken = request.headers.get('id-token') || '';
 		const getProducts = await locals.credentialServiceBillingApi.listProducts(true, {

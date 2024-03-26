@@ -18,7 +18,7 @@ export class CredentialServiceBillingServer {
 	private async getHeaders(): Promise<Record<string, string>> {
 		const m2mToken = await this.getM2MToken();
 		return {
-			// Authorization: `Bearer ${m2mToken}`,
+			Authorization: `Bearer ${m2mToken}`,
 			'Content-Type': 'application/json'
 		};
 	}
