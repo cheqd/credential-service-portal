@@ -55,11 +55,8 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 	if (ok) {
 		const searchParams = new URLSearchParams({
 			grant_type: 'client_credentials',
-			resource: privEnv.LOGTO_DEFAULT_RESOURCE_URL + '/admin',
-			scope:
-				pubEnv.PUBLIC_NODE_ENV === 'production'
-					? 'admin:subscription:create:mainnet admin:subscription:get:mainnet admin:subscription:update:mainnet admin:product:list:mainnet admin:subscription:list:mainnet'
-					: 'admin:subscription:create:testnet admin:subscription:get:testnet admin:subscription:update:testnet admin:product:list:testnet admin:subscription:list:testnet'
+			resource: privEnv.LOGTO_MANAGEMENT_API,
+			scope: 'all'
 		});
 
 		const uri = new URL('/oidc/token', privEnv.LOGTO_ENDPOINT);
@@ -79,6 +76,8 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 		if (response.status === 200) {
 			const authResponse = (await response.json()) as AuthenticationTokenResponse;
 			console.log('auth response', authResponse);
+			const check = await locals.logto.getAccessToken();
+			console.log('check ', check);
 			locals.logto.authTokenResponse = authResponse;
 		}
 	}
@@ -150,6 +149,7 @@ const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
 
 const getLogtoRoleScopes = async (fetcher: typeof fetch) => {
 	const response = await fetcher(`/api/logto/scope?roleId=${CaaSUserLogtoRole.PortalOwner}`);
+	console.log('getLogtoRoleScopes: ', response.status);
 	const data = (await response.json()) as CredentialServiceApiResponse<
 		LogtoRoleScopesList,
 		LogtoApiError
@@ -165,3 +165,33 @@ export const handle = sequence(
 	setLogtoRBACScopes,
 	authenticationHandler
 );
+
+// const getAccessToken = async (): Promise<AuthenticationTokenResponse> => {
+// 	const searchParams = new URLSearchParams({
+// 		grant_type: 'client_credentials',
+// 		resource: privEnv.LOGTO_MANAGEMENT_API,
+// 		scope: 'all'
+// 	});
+
+// 	const uri = new URL('/oidc/token', pubEnv.PUBLIC_LOGTO_ENDPOINT);
+// 	const token = `Basic ${btoa(privEnv.LOGTO_MANAGEMENT_APP_ID + ':' + privEnv.LOGTO_MANAGEMENT_APP_SECRET)}`;
+
+// 	// we use global fetch here, SvelteKit fetch throws CORS error
+// 	const response = await fetch(uri, {
+// 		method: 'POST',
+// 		body: searchParams,
+// 		headers: {
+// 			'Content-Type': 'application/x-www-form-urlencoded',
+// 			Authorization: token
+// 		}
+// 	});
+// 	const data = await response.json();
+// 	if (response.status === 200) {
+// 		const authResponse = data as AuthenticationTokenResponse;
+// 		return {
+// 			data: authResponse
+// 		} as LogtoApiResponse<AuthenticationTokenResponse>;
+// 	}
+
+// 	return { ...(data as LogtoApiError) };
+// };
