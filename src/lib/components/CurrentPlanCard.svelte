@@ -4,6 +4,7 @@
 	export let title: string = '';
 	export let description: string = '';
 	export let features: string[] = [];
+	export let trialDaysLeft: number | null = null;
 
 	let firstSliceOfFeatures = features.slice(0, features.length / 2);
 	let secondSliceOfFeatures = features.slice(features.length / 2);
@@ -28,5 +29,13 @@
 				{/each}
 			</div>
 		</div>
+
+		{#if trialDaysLeft}
+			<div>
+				<span class="text-3xl font-thin text-secondary-900">
+					Your trial ends in <span class="font-semibold">{trialDaysLeft} </span> days
+				</span>
+			</div>
+		{/if}
 	</div>
 </div>
