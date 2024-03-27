@@ -30,7 +30,7 @@
 			</div>
 		</div>
 
-		{#if trialDaysLeft}
+		{#if trialDaysLeft && trialDaysLeft > 1}
 			<div>
 				<span class="text-3xl font-thin text-secondary-900">
 					Your trial ends in <span class="font-semibold">{trialDaysLeft} </span> days

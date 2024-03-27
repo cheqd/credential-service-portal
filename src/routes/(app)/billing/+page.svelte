@@ -8,7 +8,7 @@
 	import { env as pubEnv } from '$env/dynamic/public';
 	import { productsStore } from '$lib/stores/productsStore.js';
 	import { CACHED_PRODUCTS_SESSION } from '$lib/client/constants.js';
-	import { getDaysLeft } from '$lib/client/helpers.js';
+	import { getRemainingTrialDays } from '$lib/client/helpers.js';
 
 	export let data;
 
@@ -45,7 +45,7 @@
 			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
 
 			if (currentSubscription.trial_end) {
-				trialEndsIn = getDaysLeft(currentSubscription.trial_end);
+				trialEndsIn = getRemainingTrialDays(currentSubscription.trial_end);
 			}
 		}
 	});
