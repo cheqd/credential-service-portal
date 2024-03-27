@@ -3,7 +3,6 @@ import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { LogtoAuthHandler, UserScope } from '@cntr/sveltekit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
-import { env as pubEnv } from '$env/dynamic/public';
 import { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
 import { CaaSUserLogtoRole, type CredentialServiceApiResponse } from '$lib/api/helpers';
 import type {
@@ -115,19 +114,23 @@ export const setupClient: Handle = async ({ event, resolve }) => {
 };
 
 const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
-	if (
-		event.url.pathname === '/billing' ||
-		(event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope')
-	) {
-		const response = await getLogtoRoleScopes(event.fetch);
-		if (response.success) {
-			event.locals.rbac = {
-				scopes: response.data
-			};
+	try {
+		if (
+			event.url.pathname === '/billing' ||
+			(event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope')
+		) {
+			const response = await getLogtoRoleScopes(event.fetch);
+			if (response.success) {
+				event.locals.rbac = {
+					scopes: response.data
+				};
+			}
 		}
+	} catch (error) {
+		console.error('Error in setLogtoRBACScopes:', error);
 	}
 
-	return await resolve(event);
+	return resolve(event);
 };
 
 const getLogtoRoleScopes = async (fetcher: typeof fetch) => {

@@ -28,7 +28,7 @@
 	</div>
 	<div class="">
 		<p class="text-secondary-900 max-w-md text-center antialiased">
-			{@html errorMessage}
+			{errorMessage}
 		</p>
 	</div>
 	<div class="flex gap-9">
