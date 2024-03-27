@@ -13,7 +13,10 @@
 <div class="flex flex-col gap-3">
 	<span class="text-3xl tracking-wide font-semibold">Plan & Billing</span>
 	<div class=" rounded-lg border border-tertiary-300 p-6 flex flex-col gap-5 animated-bg">
-		<span class="text-4xl text-primary-500/80 tracking-wide font-semibold">My Plan: {title}</span>
+		<span class="md:text-4xl text-2xl text-secondary-900 tracking-wide font-semibold"
+			>My Plan:
+			{title}
+		</span>
 		<p class="text-tertiary-900">
 			{description}
 		</p>
@@ -32,8 +35,8 @@
 
 		{#if trialDaysLeft && trialDaysLeft > 1}
 			<div>
-				<span class="text-3xl font-thin text-secondary-900">
-					Your trial ends in <span class="font-semibold">{trialDaysLeft} </span> days
+				<span class="text-xl text-secondary-900">
+					Your trial ends in <span class="font-semibold text-primary-500">{trialDaysLeft} </span> days
 				</span>
 			</div>
 		{/if}
