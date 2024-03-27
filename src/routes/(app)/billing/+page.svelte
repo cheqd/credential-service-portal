@@ -93,7 +93,7 @@
 </script>
 
 <div class="h-full w-full flex flex-col gap-9">
-	<div class="flex flex-col gap-20 p-9">
+	<div class="flex flex-col gap-10 p-9">
 		{#if currentPlan && !data.subscriptionNotFound}
 			<CurrentPlanCard
 				features={currentPlan.features.map((f) => f.name)}
@@ -122,6 +122,7 @@
 					priceId={product.prices[0].id}
 					currency={product.prices[0].currency}
 					subscriptionNotFound={data.subscriptionNotFound}
+					errorGettingCurrentPlan={data.errorWhenGettingSubscription}
 				/>
 			{/each}
 

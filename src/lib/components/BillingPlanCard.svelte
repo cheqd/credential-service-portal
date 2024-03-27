@@ -17,10 +17,20 @@
 	export let subscriptionNotFound: boolean;
 
 	export let createSession: (priceId: string) => Promise<void>;
+	export let errorGettingCurrentPlan: boolean = false;
 	let isLoading = false;
 	const styling = `flex-shrink-0 w-72 lg:w-80 rounded  ${isCurrentPlan ? ' border-[0.5px] bg-gray-100/25 border-primary-400 ' : ' bg-[#e8ebf4] hover:bg-gradient-to-b transition-transform duration-500 hover:translate-y-2 hover:scale-105 hover:border-0 from-primary-100 to-white'}   shadow-lg  flex flex-col gap-3 p-6 items-start`;
 
 	let currencySymbol: string;
+	const billingCardButtonTitle = () =>
+		isCurrentPlan
+			? `Current Plan: ${title}`
+			: subscriptionNotFound
+				? `Begin with ${title} `
+				: isCustom
+					? 'Talk to Us'
+					: `Switch to ${title}`;
+
 	onMount(() => {
 		currencySymbol = getSymbolFromCurrency(currency) || '';
 		if (!currency) {
@@ -56,13 +66,9 @@
 			}
 			isLoading = false;
 		}}
-		disabled={isCurrentPlan || isLoading}
+		disabled={isCurrentPlan || isLoading || errorGettingCurrentPlan}
 	>
-		{isCurrentPlan
-			? `Current Plan: ${title}`
-			: subscriptionNotFound
-				? `Begin with ${title} `
-				: `Switch to ${title}`}
+		{billingCardButtonTitle()}
 
 		{#if isLoading}
 			<LoaderIcon class="ml-2 h-4 w-4 md:h-5 md:w-5" />

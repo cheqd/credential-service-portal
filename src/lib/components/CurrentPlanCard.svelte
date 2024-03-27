@@ -21,12 +21,12 @@
 			{description}
 		</p>
 		<div class="flex flex-col lg:gap-2">
-			<div class="flex flex-col lg:grid grid-cols-4 gap-3 lg:space-x-6 text-tertiary-900">
+			<div class="flex flex-col lg:grid grid-cols-4 lg:gap-3 lg:space-x-6 text-tertiary-900">
 				{#each firstSliceOfFeatures as feat}
 					<span class="flex gap-1 items-center"><CheckIcon class="text-success-400" />{feat}</span>
 				{/each}
 			</div>
-			<div class="flex flex-col gap-3 lg:grid grid-cols-4 lg:space-x-6 text-tertiary-900">
+			<div class="flex flex-col lg:gap-3 lg:grid grid-cols-4 lg:space-x-6 text-tertiary-900">
 				{#each secondSliceOfFeatures as feat}
 					<span class="flex gap-1 items-center"><CheckIcon class="text-success-400" />{feat}</span>
 				{/each}
