@@ -55,7 +55,7 @@
 		}
 		console.log('data', data);
 
-		if (data.errorWhenGettingSubscription && data.subscriptionNotFound) {
+		if (data.errorWhenGettingSubscription) {
 			const dialog = getErrorDialog('Error: when getting current plan.', false);
 			modalStore.clear();
 			modalStore.trigger(dialog);
