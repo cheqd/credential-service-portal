@@ -9,6 +9,9 @@
 	import { productsStore } from '$lib/stores/productsStore.js';
 	import { CACHED_PRODUCTS_SESSION } from '$lib/client/constants.js';
 	import { getRemainingTrialDays } from '$lib/client/helpers.js';
+	import { getErrorDialog } from '$lib/components/Dialogs/dialog.js';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	const modalStore = getModalStore();
 
 	export let data;
 
@@ -16,8 +19,6 @@
 	let currentSubscription: Subscription | null = null;
 	let currentPlan: Product | null = null;
 	let trialEndsIn: number | null = null;
-
-	$: console.log('subs not found', data.subscriptionNotFound);
 
 	onMount(async () => {
 		const cachedProducts = sessionStorage.getItem(CACHED_PRODUCTS_SESSION);
@@ -33,6 +34,10 @@
 			if (response.status === 200) {
 				productsStore.set(productsData);
 				sessionStorage.setItem(CACHED_PRODUCTS_SESSION, JSON.stringify(productsData));
+			} else {
+				const dialog = getErrorDialog('Error: when getting plans.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
 			}
 		}
 
@@ -48,6 +53,13 @@
 				trialEndsIn = getRemainingTrialDays(currentSubscription.trial_end);
 			}
 		}
+		console.log('data', data);
+
+		if (data.errorWhenGettingSubscription && data.subscriptionNotFound) {
+			const dialog = getErrorDialog('Error: when getting current plan.', false);
+			modalStore.clear();
+			modalStore.trigger(dialog);
+		}
 	});
 
 	async function handleSubscription(priceId: string) {
@@ -57,14 +69,25 @@
 				const createSub = await createSubscription(priceId, idToken);
 				if (createSub.success) {
 					window.location.href = createSub.data.sessionURL;
+					return;
 				}
+				const dialog = getErrorDialog('Error: when creating subscription.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
 			} else {
 				const updateSub = await updateSubscription(idToken);
 				if (updateSub.success) {
 					window.location.href = updateSub.data.sessionURL;
+					return;
 				}
+				const dialog = getErrorDialog('Error: when updating subscription.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
 			}
 		} catch (error) {
+			const dialog = getErrorDialog('Error when subscribing.', false);
+			modalStore.clear();
+			modalStore.trigger(dialog);
 			console.error('Subscription error:', error);
 		}
 	}
@@ -73,7 +96,7 @@
 </script>
 
 <div class="h-full w-full flex flex-col gap-9">
-	<div class="flex flex-col gap-24 p-9">
+	<div class="flex flex-col gap-20 p-9">
 		{#if currentPlan && !data.subscriptionNotFound}
 			<CurrentPlanCard
 				features={currentPlan.features.map((f) => f.name)}

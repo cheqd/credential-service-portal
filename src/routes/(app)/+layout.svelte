@@ -1,20 +1,31 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
 	import Header from '$lib/components/header.svelte';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import '../../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import { initializeStores, Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
+	import type { ModalComponent } from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
 	import Loader from '$lib/components/Loader.svelte';
+	import Dialog from '$lib/components/Dialogs/Dialog.svelte';
+	import ErrorDialog from '$lib/components/Dialogs/ErrorDialog.svelte';
 	initializeStores();
-	const drawerStore = getDrawerStore();
 
+	const components: Record<string, ModalComponent> = {
+		ErrorDialog: {
+			ref: ErrorDialog
+		}
+	};
+
+	const drawerStore = getDrawerStore();
 	const openDrawer = () => drawerStore.open({});
 	export let data;
 </script>
 
-<Drawer bgDrawer="animated-bg">
+<Dialog {components} />
+
+<Drawer bgDrawer="animated-bg ">
 	<button
 		on:click={() => {
 			goto('/home');
