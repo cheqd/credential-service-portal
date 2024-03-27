@@ -3,7 +3,6 @@ import type { CreateSubscriptionRequestBody } from '$lib/types/types/subscriptio
 import { isAuthorized } from '$lib/api/helpers';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	console.log('locals role at create sub', locals.rbac);
 	if (
 		!isAuthorized(locals, 'admin:subscription:create:mainnet', 'admin:subscription:create:testnet')
 	) {

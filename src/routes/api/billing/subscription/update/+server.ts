@@ -3,7 +3,6 @@ import type { UpdateSubscriptionRequestBody } from '$lib/types/types/subscriptio
 import { isAuthorized } from '$lib/api/helpers';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	console.log('locals', locals.rbac);
 	if (
 		!isAuthorized(locals, 'admin:subscription:update:mainnet', 'admin:subscription:update:testnet')
 	) {

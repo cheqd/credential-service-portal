@@ -12,9 +12,8 @@ import { LogtoRoleScopesListSchema } from '$lib/types/schemas/logto.schema';
 export const GET: RequestHandler = async ({ locals, url, fetch }) => {
 	const authToken = locals.logto.authTokenResponse;
 	let resp: CredentialServiceApiResponse<LogtoRoleScopesList, LogtoApiError>;
-	console.log('auth token', authToken);
+
 	if (!authToken) {
-		console.log('faling at logto/scope');
 		resp = {
 			success: false,
 			status: 401,
@@ -23,20 +22,16 @@ export const GET: RequestHandler = async ({ locals, url, fetch }) => {
 		};
 		return json(resp, { status: 401 });
 	}
-	console.log('tokent at /scope', authToken.access_token);
+
 	try {
-		console.log('search params', url.searchParams.get('roleId'));
 		const roleId = parseCaaSUserLogtoRole(url.searchParams.get('roleId') ?? '');
-		console.log('role id', roleId);
 		const uri = new URL(`/api/roles/${LogtoRolesMap.get(roleId)}/scopes`, env.LOGTO_ENDPOINT);
-		console.log('uri', uri);
 		const response = await fetch(uri, {
 			headers: {
 				Authorization: `Bearer ${authToken.access_token}`
 			}
 		});
 
-		console.log('/api/roles/roleId/scopes: response ', response.status);
 		const data = await response.json();
 
 		if (response.status === 200) {

@@ -53,7 +53,6 @@
 				trialEndsIn = getRemainingTrialDays(currentSubscription.trial_end);
 			}
 		}
-		console.log('data', data);
 
 		if (data.errorWhenGettingSubscription) {
 			const dialog = getErrorDialog('Error: when getting current plan.', false);
@@ -91,8 +90,6 @@
 			console.error('Subscription error:', error);
 		}
 	}
-
-	$: console.log('trial ends in ', trialEndsIn);
 </script>
 
 <div class="h-full w-full flex flex-col gap-9">

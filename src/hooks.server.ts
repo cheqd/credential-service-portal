@@ -14,9 +14,7 @@ import type {
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
-	console.log('logto auth', logtoAuth);
 	const authenticated = logtoAuth;
-	// && event.locals.user;
 
 	const pathname = event.url.pathname;
 	switch (pathname) {
@@ -32,7 +30,6 @@ const authenticationHandler: Handle = async ({ event, resolve }) => {
 			}
 			break;
 		case '/logto/callback':
-			console.log('is user authenticated', authenticated);
 			if (authenticated) {
 				throw redirect(301, '/home');
 			}
@@ -71,13 +68,8 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 			}
 		});
 
-		console.log('token respnse', response.status);
-
 		if (response.status === 200) {
 			const authResponse = (await response.json()) as AuthenticationTokenResponse;
-			console.log('auth response', authResponse);
-			const check = await locals.logto.getAccessToken();
-			console.log('check ', check);
 			locals.logto.authTokenResponse = authResponse;
 		}
 	}
@@ -88,10 +80,7 @@ const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 const setLogtoAuthenticatedUser: Handle = async ({ event, resolve }) => {
 	try {
 		const user = await event.locals.logto.fetchUserInfo();
-		console.log('here is authenticated user', user);
-
 		const idToken = await event.locals.logto.getIdToken();
-		console.log('id token of authenticated user', idToken);
 		event.locals.user = user;
 		event.locals.idToken = idToken;
 	} catch (err) {
@@ -121,22 +110,16 @@ export const setupClient: Handle = async ({ event, resolve }) => {
 		privEnv.CREDENTIAL_SERVICE_ENDPOINT,
 		event.fetch
 	);
-	console.log('client', event.locals.credentialServiceBillingApi);
 
 	return await resolve(event);
 };
 
 const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
-	console.log('at setLogtoRBACScopes: ');
-	console.log('event.url', event.url.pathname);
-
 	if (
 		event.url.pathname === '/billing' ||
 		(event.url.pathname.startsWith('/api') && event.url.pathname !== '/api/logto/scope')
 	) {
-		// console.log('event.url', event.url);
 		const response = await getLogtoRoleScopes(event.fetch);
-		console.log('logto scope', response.status);
 		if (response.success) {
 			event.locals.rbac = {
 				scopes: response.data
@@ -149,7 +132,6 @@ const setLogtoRBACScopes: Handle = async ({ event, resolve }) => {
 
 const getLogtoRoleScopes = async (fetcher: typeof fetch) => {
 	const response = await fetcher(`/api/logto/scope?roleId=${CaaSUserLogtoRole.PortalOwner}`);
-	console.log('getLogtoRoleScopes: ', response.status);
 	const data = (await response.json()) as CredentialServiceApiResponse<
 		LogtoRoleScopesList,
 		LogtoApiError
@@ -165,33 +147,3 @@ export const handle = sequence(
 	setLogtoRBACScopes,
 	authenticationHandler
 );
-
-// const getAccessToken = async (): Promise<AuthenticationTokenResponse> => {
-// 	const searchParams = new URLSearchParams({
-// 		grant_type: 'client_credentials',
-// 		resource: privEnv.LOGTO_MANAGEMENT_API,
-// 		scope: 'all'
-// 	});
-
-// 	const uri = new URL('/oidc/token', pubEnv.PUBLIC_LOGTO_ENDPOINT);
-// 	const token = `Basic ${btoa(privEnv.LOGTO_MANAGEMENT_APP_ID + ':' + privEnv.LOGTO_MANAGEMENT_APP_SECRET)}`;
-
-// 	// we use global fetch here, SvelteKit fetch throws CORS error
-// 	const response = await fetch(uri, {
-// 		method: 'POST',
-// 		body: searchParams,
-// 		headers: {
-// 			'Content-Type': 'application/x-www-form-urlencoded',
-// 			Authorization: token
-// 		}
-// 	});
-// 	const data = await response.json();
-// 	if (response.status === 200) {
-// 		const authResponse = data as AuthenticationTokenResponse;
-// 		return {
-// 			data: authResponse
-// 		} as LogtoApiResponse<AuthenticationTokenResponse>;
-// 	}
-
-// 	return { ...(data as LogtoApiError) };
-// };

@@ -94,7 +94,6 @@ export class CredentialServiceBillingServer {
 		prices: boolean = true,
 		initOptions?: RequestInit
 	): Promise<CredentialServiceApiResponse<GetProductsListResponse, GenericErrorResponse>> {
-		console.log({ ...(initOptions?.headers || {}), ...(await this.getHeaders()) }, 'headers');
 		try {
 			const uri = new URL(`/admin/product/list?prices=${prices}`, this.apiEndpoint);
 			const response = await this.fetch(uri, {
@@ -103,7 +102,6 @@ export class CredentialServiceBillingServer {
 			});
 			return this.handleApiResponse<GetProductsListResponse>(response);
 		} catch (error) {
-			console.log('error here', error);
 			return { success: false, status: 500, error: (error as Error).message };
 		}
 	}

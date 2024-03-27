@@ -6,9 +6,8 @@ import type { LogtoUserRolesResponse } from '$lib/types/types/logto.types';
 
 export const GET: RequestHandler = async ({ locals, fetch }) => {
 	const authToken = locals.logto.authTokenResponse;
-	console.log('list roles response');
+
 	if (!authToken) {
-		console.log('failing at /logto/roles');
 		return json(
 			{ error: 'logto: getRole: missing authentication token', roles: [] },
 			{ status: 401 }
@@ -25,7 +24,6 @@ export const GET: RequestHandler = async ({ locals, fetch }) => {
 			}
 		});
 
-		console.log('list roles response', response.status);
 		if (response.status === 200) {
 			const data = await response.json();
 			const roles = LogtoUserRolesListSchema.safeParse(data);
