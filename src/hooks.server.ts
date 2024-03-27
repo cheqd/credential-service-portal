@@ -47,29 +47,34 @@ export const logtoCallbackHandler = async (event: RequestEvent) => {
 const setLogtoAuthTokenForM2M: Handle = async ({ event, resolve }) => {
 	const { url, locals } = event;
 
-	const ok = url.pathname.startsWith('/api');
-	if (ok) {
-		const searchParams = new URLSearchParams({
-			grant_type: 'client_credentials',
-			resource: privEnv.LOGTO_MANAGEMENT_API,
-			scope: 'all'
-		});
+	if (url.pathname.startsWith('/api')) {
+		try {
+			const searchParams = new URLSearchParams({
+				grant_type: 'client_credentials',
+				resource: privEnv.LOGTO_MANAGEMENT_API,
+				scope: 'all'
+			});
 
-		const uri = new URL('/oidc/token', privEnv.LOGTO_ENDPOINT);
-		const token = `Basic ${btoa(privEnv.LOGTO_M2M_APP_ID + ':' + privEnv.LOGTO_M2M_APP_SECRET)}`;
+			const uri = new URL('/oidc/token', privEnv.LOGTO_ENDPOINT);
+			const token = `Basic ${btoa(privEnv.LOGTO_M2M_APP_ID + ':' + privEnv.LOGTO_M2M_APP_SECRET)}`;
 
-		const response = await fetch(uri, {
-			method: 'POST',
-			body: searchParams,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-				Authorization: token
+			const response = await fetch(uri, {
+				method: 'POST',
+				body: searchParams,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+					Authorization: token
+				}
+			});
+
+			if (response.ok) {
+				const authResponse = await response.json();
+				locals.logto.authTokenResponse = authResponse;
+			} else {
+				console.error('Failed to fetch M2M token:', response.status);
 			}
-		});
-
-		if (response.status === 200) {
-			const authResponse = (await response.json()) as AuthenticationTokenResponse;
-			locals.logto.authTokenResponse = authResponse;
+		} catch (error) {
+			console.error('Error occurred while fetching M2M token:', error);
 		}
 	}
 
