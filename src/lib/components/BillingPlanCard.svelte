@@ -46,7 +46,7 @@
 		{/if}
 	</div>
 	<button
-		class="btn variant-filled-primary px-6 text-lg my-3 bg-primary-400 w-full"
+		class="btn variant-filled-primary md:px-6 md:text-lg my-3 bg-primary-400 w-full text-base"
 		on:click={async () => {
 			isLoading = true;
 			if (!isCustom) {
@@ -61,10 +61,13 @@
 		{isCurrentPlan
 			? `Current Plan: ${title}`
 			: subscriptionNotFound
-				? `Begin with ${title} now`
-				: `Switch to ${title} now`}
+				? `Begin with ${title} `
+				: `Switch to ${title}`}
+
 		{#if isLoading}
-			<LoaderIcon class="ml-2 h-5 w-5" />
+			<LoaderIcon class="ml-2 h-4 w-4 md:h-5 md:w-5" />
+		{:else}
+			<span class="ml-2"> &#8599;</span>
 		{/if}
 	</button>
 	<div class="flex flex-col text-tertiary-900">
