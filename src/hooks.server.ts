@@ -5,11 +5,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { env as privEnv } from '$env/dynamic/private';
 import { CredentialServiceBillingServer } from '$lib/api/credentialServiceBilling';
 import { CaaSUserLogtoRole, type CredentialServiceApiResponse } from '$lib/api/helpers';
-import type {
-	AuthenticationTokenResponse,
-	LogtoApiError,
-	LogtoRoleScopesList
-} from '$lib/types/types/logto.types';
+import type { LogtoApiError, LogtoRoleScopesList } from '$lib/types/types/logto.types';
 
 const authenticationHandler: Handle = async ({ event, resolve }) => {
 	const logtoAuth = await event.locals.logto.isAuthenticated();
