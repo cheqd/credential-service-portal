@@ -1,62 +1,143 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { createSubscription, updateSubscription } from '$lib/api/subscriptions';
 	import BillingPlanCard from '$lib/components/BillingPlanCard.svelte';
 	import CurrentPlanCard from '$lib/components/CurrentPlanCard.svelte';
+	import type { GetProductsListResponse, Product } from '$lib/types/types/product.types.js';
+	import type { Subscription } from '$lib/types/types/subscription.types.js';
+	import { env as pubEnv } from '$env/dynamic/public';
+	import { productsStore } from '$lib/stores/productsStore.js';
+	import { CACHED_PRODUCTS_SESSION } from '$lib/client/constants.js';
+	import { getRemainingTrialDays } from '$lib/client/helpers.js';
+	import { getErrorDialog } from '$lib/components/Dialogs/dialog.js';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	const modalStore = getModalStore();
+
+	export let data;
+
+	let products: Product[] = [];
+	let currentSubscription: Subscription | null = null;
+	let currentPlan: Product | null = null;
+	let trialEndsIn: number | null = null;
+
+	onMount(async () => {
+		const cachedProducts = sessionStorage.getItem(CACHED_PRODUCTS_SESSION);
+		if (cachedProducts) {
+			productsStore.set(JSON.parse(cachedProducts) as GetProductsListResponse);
+		} else {
+			const response = await fetch('/api/billing/products', {
+				headers: {
+					'id-token': data.idToken || ''
+				}
+			});
+			const productsData = (await response.json()) as GetProductsListResponse;
+			if (response.status === 200) {
+				productsStore.set(productsData);
+				sessionStorage.setItem(CACHED_PRODUCTS_SESSION, JSON.stringify(productsData));
+			} else {
+				const dialog = getErrorDialog('Error: when getting plans.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
+			}
+		}
+
+		if ($productsStore) {
+			products = $productsStore.products.data;
+		}
+		currentSubscription = data?.subscription ?? null;
+
+		if (currentSubscription) {
+			currentPlan = products.find((p) => p.id === currentSubscription?.plan.product) || null;
+
+			if (currentSubscription.trial_end) {
+				trialEndsIn = getRemainingTrialDays(currentSubscription.trial_end);
+			}
+		}
+
+		if (data.errorWhenGettingSubscription) {
+			const dialog = getErrorDialog('Error: when getting current plan.', false);
+			modalStore.clear();
+			modalStore.trigger(dialog);
+		}
+	});
+
+	async function handleSubscription(priceId: string) {
+		try {
+			const idToken = data.idToken || null;
+			if (data.subscriptionNotFound) {
+				const createSub = await createSubscription(priceId, idToken);
+				if (createSub.success) {
+					window.location.href = createSub.data.sessionURL;
+					return;
+				}
+				const dialog = getErrorDialog('Error: when creating subscription.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
+			} else {
+				const updateSub = await updateSubscription(idToken);
+				if (updateSub.success) {
+					window.location.href = updateSub.data.sessionURL;
+					return;
+				}
+				const dialog = getErrorDialog('Error: when updating subscription.', false);
+				modalStore.clear();
+				modalStore.trigger(dialog);
+			}
+		} catch (error) {
+			const dialog = getErrorDialog('Error when subscribing.', false);
+			modalStore.clear();
+			modalStore.trigger(dialog);
+			console.error('Subscription error:', error);
+		}
+	}
 </script>
 
-<div class=" h-full w-full flex flex-col gap-9">
-	<div class="flex flex-col gap-24 p-9">
-		<div class="flex flex-col gap-6">
-			<CurrentPlanCard />
-			<div class="flex flex-col">
-				<span class="text-3xl tracking-wide font-semibold">All Plans</span>
-				<p class=" text-tertiary-600">Simple and transparent pricing that grows with you.</p>
-			</div>
-			<div class="no-scrollbar flex overflow-x-scroll space-x-8 p-4 justify-start -mx-8 lg:mx-0">
+<div class="h-full w-full flex flex-col gap-9">
+	<div class="flex flex-col gap-10 p-9">
+		{#if currentPlan && !data.subscriptionNotFound}
+			<CurrentPlanCard
+				features={currentPlan.features.map((f) => f.name)}
+				description={currentPlan.description}
+				title={currentPlan.name}
+				trialDaysLeft={trialEndsIn}
+			/>
+		{/if}
+		<div class="flex flex-col">
+			<span class="text-3xl tracking-wide font-semibold">All Plans</span>
+			<p class="text-tertiary-900">Simple and transparent pricing that grows with you.</p>
+		</div>
+		<div class="no-scrollbar flex overflow-x-scroll space-x-8 p-4 justify-start -mx-8 lg:mx-0">
+			{#each products as product}
 				<BillingPlanCard
-					title="Starter"
-					description="Get a hands-On experience of Credential Service"
-					pricing={99}
-					featuresTitle="Everything in Free trial and"
-					features={[
-						'Credential Verification',
-						'Create 10 Credentials',
-						'Email Support',
-						'Test Environment',
-						'API access'
-					]}
-					isCustom={false}
+					title={product.name}
+					description={product.description}
+					pricing={product.prices[0].unit_amount / 100}
+					featuresTitle={product.name.toLowerCase() === 'starter'
+						? 'Everything in Free trial and: '
+						: 'Everything in starter and: '}
+					features={product.features.map((f) => f.name)}
+					isCustom={product.name.toLowerCase() === 'custom'}
+					createSession={handleSubscription}
+					isCurrentPlan={product.id === currentPlan?.id && !data.subscriptionNotFound}
+					priceId={product.prices[0].id}
+					currency={product.prices[0].currency}
+					subscriptionNotFound={data.subscriptionNotFound}
+					errorGettingCurrentPlan={data.errorWhenGettingSubscription}
 				/>
+			{/each}
 
-				<BillingPlanCard
-					title="Business"
-					description="Get a hands-On experience of Credential Service"
-					pricing={499}
-					featuresTitle="Everything in Starter and"
-					features={[
-						'Credential Verification',
-						'Create 10 Credentials',
-						'Email Support',
-						'Test Environment',
-						'API access'
-					]}
-					isCustom={false}
-				/>
-
-				<BillingPlanCard
-					title="Custom"
-					description="Get a hands-On experience of Credential Service"
-					pricing={-1}
-					featuresTitle="Everything in Business and"
-					features={[
-						'Credential Verification',
-						'Create 10 Credentials',
-						'Email Support',
-						'Test Environment',
-						'API access'
-					]}
-					isCustom={true}
-				/>
-			</div>
+			<BillingPlanCard
+				title={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_TITLE}
+				description={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_DESCRIPTION}
+				pricing={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_PRICE}
+				featuresTitle={pubEnv.PUBLIC_CUSTOM_BILLING_PLAN_FEATURES_TITLE}
+				features={[]}
+				createSession={async () => {}}
+				isCustom={true}
+				priceId={''}
+				isCurrentPlan={false}
+				subscriptionNotFound={data.subscriptionNotFound}
+			/>
 		</div>
 	</div>
 </div>
